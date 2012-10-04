@@ -1,0 +1,31 @@
+{
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://packages.zendframework.com/"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/icomefromthenet/PHPStats"
+        },
+        {
+            "type" : "vcs",
+            "url"  : "git://github.com/graphgroup/object.git"
+        }
+       
+    ],
+    "require": {
+        "doctrine/common"      : "2.3.0",
+        "PHPStats/PHPStats"    : "dev-master",
+        "monolog/monolog"      : "1.2.1",
+        "pimple/pimple"        : "dev-master",
+        "graphgroup/object"    : "dev-master",
+        "graphgroup/template"  : "dev-master",
+        "patchwork/utf8"       : "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "ReverseRegex": "src/"
+        }
+    }
+}
