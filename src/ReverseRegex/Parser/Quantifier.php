@@ -58,9 +58,6 @@ class Quantifier implements StrategyInterface
         $head->setMaxOccurances($max);
         $head->setMinOccurances($min);
         
-        # move over the current quantifier token
-        $lexer->moveNext();        
-        
         return $head;
     }
     
@@ -80,9 +77,6 @@ class Quantifier implements StrategyInterface
         
         $head->setMaxOccurances($max);
         $head->setMinOccurances($min);
-        
-        # move over the current quantifier token
-        $lexer->moveNext(); 
         
         return $head;
     }
@@ -104,14 +98,12 @@ class Quantifier implements StrategyInterface
         $head->setMaxOccurances($max);
         $head->setMinOccurances($min);
         
-        # move over the current quantifier token
-        $lexer->moveNext(); 
-        
         return $head;
     }
     
+    
     /**
-      *  Parse the current token for closers : {###} {##,} {##,##}
+      *  Parse the current token for closers : {###} { ## } {##,##}
       *
       *  @access public
       *  @return ReverseRegex\Generator\Scope a new head
@@ -121,14 +113,88 @@ class Quantifier implements StrategyInterface
       */
     public function quantifyClosure(Scope $head, Scope $result, Lexer $lexer)
     {
-        # check format a {#####}
-        while($lexer->peek())
+        $tokens = array();
+        $min = $head->getMinOccurances();
+        $max = $head->getMaxOccurances();
         
+        # move to the first token inside the quantifer.
+        $lexer->moveNext();
         
+        # parse for the minimum , move lookahead until read end of the closure or the `,`
+        while($lexer->lookahead !== null && $lexer->lookahead['type']  !== Lexer::T_QUANTIFIER_CLOSE && $lexer->lookahead['value'] !== ',' ) {
+
+            if($lexer->lookahead['type']  === Lexer::T_QUANTIFIER_OPEN) {
+                throw new ParserException('Nesting Quantifiers is not allowed');
+            }
+            $tokens[] = $lexer->lookahead;
+            $lexer->moveNext();   
+        }
         
+        $min = $this->convertInteger($tokens);
         
+        # do we have a maximum after the comma?
+        if($lexer->lookahead['value'] === ',' ) {
+        
+            # make sure we have values to gather ie not {778,}
+            $tokens = array();
+            
+             # move to the first token after the `,` character 
+            $lexer->moveNext();
+            
+            # grab the remaining numbers
+            while($lexer->lookahead !== null && $lexer->lookahead['type']  !== Lexer::T_QUANTIFIER_CLOSE) {
+                
+                if($lexer->lookahead['type']  === Lexer::T_QUANTIFIER_OPEN) {
+                    throw new ParserException('Nesting Quantifiers is not allowed');
+                }
+                
+                $tokens[] = $lexer->lookahead;
+                $lexer->moveNext();   
+            }
+            
+            $max = $this->convertInteger($tokens);
+            
+        }
+        else {
+            $max = $min;
+        }
+        
+        $head->setMaxOccurances($max);
+        $head->setMinOccurances($min);
+        
+        # skip the lexer to the closing token
+        $lexer->skipUntil(Lexer::T_QUANTIFIER_CLOSE);
+        
+        # check if the last matched token was the closing bracket
+        # not going to stop errors like {#####,###{[a-z]} {#####{[a-z]}
+        if($lexer->lookahead['type'] !== Lexer::T_QUANTIFIER_CLOSE) {
+            throw new ParserException('Closing quantifier token `}` not found');     
+        }
         
         return $head;
     }
+    
+    
+    /**
+      *  Convert a collection of Lexer::T_LITERAL_NUMERIC tokens into integer
+      *
+      *  @access public
+      *  @return integer the size
+      *  @param array $tokens collection of tokens from lexer
+      */
+    protected function convertInteger(array $tokens)
+    {
+        $number_string = array_map(function($item) { return $item['value']; }, $tokens);
+        $number_string = trim(implode('',$number_string));
+        
+        $value = preg_match('/^(0|(-{0,1}[1-9]\d*))$/', $number_string);
+
+        if ($value == 0) {
+            throw new ParserException('Quantifier expects and integer compitable string');
+        }
+        
+        return intval($number_string);
+    }
+    
 }
 /* End of File */

@@ -26,6 +26,9 @@ class Scope extends Node implements ContextInterface, RepeatInterface
     public function __construct($label = self::TEMPLATE_LABEL)
     {
         parent::__construct($label);
+
+        $this->setMinOccurances(1);
+        $this->setMaxOccurances(1);
     }
     
     
