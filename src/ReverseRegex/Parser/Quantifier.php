@@ -5,6 +5,12 @@ use ReverseRegex\Generator\Scope;
 use ReverseRegex\Lexer;
 use ReverseRegex\Exception as ParserException;
 
+/**
+  *  Parse a group quantifer e.g (abghb){1,5} , (abghb){5} , (abghb)* , (abghb)? , (abghb)+
+  *
+  *  @author Lewis Dyer <getintouch@icomefromthenet.com>
+  *  @since 0.0.1
+  */
 class Quantifier implements StrategyInterface
 {
     

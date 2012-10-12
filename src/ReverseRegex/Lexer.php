@@ -133,6 +133,10 @@ class Lexer extends BaseLexer
       */
     const T_SHORT_X     = 108;
     
+    /**
+      *  Unicode hex sequence /X{} /XNum 
+      */
+    const T_SHORT_UNICODE_X = 109;
     
     //  ----------------------------------------------------------------------------
     # Lexer Modes
@@ -268,7 +272,11 @@ class Lexer extends BaseLexer
                 $type = self::T_SHORT_X;
                 $this->escape_mode = false;
             break;
-            case ($value === 'p' && $this->escape_mode === true) :
+            case ($value === 'X' && $this->escape_mode === true) :
+                $type = self::T_SHORT_UNICODE_X;
+                $this->escape_mode = false;
+            break;
+            case ($value === 'p' || $value === 'P' && $this->escape_mode === true) :
                 $type = self::T_SHORT_P;
                 $this->escape_mode = false;
             break;

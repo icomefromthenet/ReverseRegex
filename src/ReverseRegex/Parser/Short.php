@@ -6,6 +6,12 @@ use ReverseRegex\Generator\LiteralScope;
 use ReverseRegex\Lexer;
 use ReverseRegex\Exception as ParserException;
 
+/**
+  *  Parse a following Shorts (\d, \w, \D, \W, \s, \S, dot)
+  *
+  *  @author Lewis Dyer <getintouch@icomefromthenet.com>
+  *  @since 0.0.1
+  */
 class Short implements StrategyInterface
 {
     
@@ -23,71 +29,59 @@ class Short implements StrategyInterface
     {
         switch(true) {
             case ($lexer->lookahead['type'] === Lexer::T_DOT) :
-                $head = $this->convertDotToRange($head,$result,$lexer);
+                $this->convertDotToRange($head,$result,$lexer);
             break;
             case ($lexer->lookahead['type'] === Lexer::T_SHORT_D) :
             case ($lexer->lookahead['type'] === Lexer::T_SHORT_NOT_D) :
-                $head = $this->convertDigitToRange($head,$result,$lexer);
+                $this->convertDigitToRange($head,$result,$lexer);
             break;
             case ($lexer->lookahead['type'] === Lexer::T_SHORT_W) :
             case ($lexer->lookahead['type'] === Lexer::T_SHORT_NOT_W) :
-                $head = $this->convertWordToRange($head,$result,$lexer);
+                $this->convertWordToRange($head,$result,$lexer);
+            break;
             case ($lexer->lookahead['type'] === Lexer::T_SHORT_S) :
             case ($lexer->lookahead['type'] === Lexer::T_SHORT_NOT_S) :
-                $head = $this->convertWhiteSpaceToRange($head,$result,$lexer);
+                $this->convertWhiteSpaceToRange($head,$result,$lexer);
             break;
             default :
                 //do nothing no token matches found
         }
-        
-        return $head;
         
     }
     
     
     public function convertDotToRange(Scope $head, Scope $result, Lexer $lexer)
     {
-        $min = 32;
-        $max = 127;
-        $scope   = new LiteralScope();
-        
-        # digits only        
-        while($min !== $max) {
-            $scope->addLiteral(chr($min));
-            $min++;
+        for($i = 0; $i <= 127; $i++) {
+            $head->addLiteral(chr($i));
         }
-        
-        
     }
     
     public function convertDigitToRange(Scope $head, Scope $result, Lexer $lexer)
     {
-        $numbers = range(0,9);
-        $scope   = new LiteralScope();
-        
         if($lexer->lookahead['type'] === Lexer::T_SHORT_D) {
-            # digits only        
-            foreach($numbers as $number) {
-                $scope->addLiteral($number);
+            # digits only (0048 - 0057) digits      
+            $min = 48;
+            $max = 57;
+            while($min <= $max) {
+                $head->addLiteral(chr($min));
+                $min++;
             }
         }
         else {
-            # not digits
-            //32 47
-            $min = 32;
+            
+            # not digits every assci character expect (0048 - 0057) digits
+            $min = 0;
             $max = 47;
-
-            while($min !== $max) {
-                $scope->addLiteral(chr($min));
+            while($min <= $max) {
+                $head->addLiteral(chr($min));
                 $min++;
             }
             
-            //58 //126
             $min = 58;
-            $max = 126;
-
-            while($min !== $max) {
-                $scope->addLiteral(chr($min));
+            $max = 127;
+            while($min <= $max) {
+                $head->addLiteral(chr($min));
                 $min++;
             }
 
@@ -98,13 +92,82 @@ class Short implements StrategyInterface
     
     public function convertWordToRange(Scope $head, Scope $result, Lexer $lexer)
     {
-        
-                
+        if($lexer->lookahead['type'] === Lexer::T_SHORT_W) {
+            # `[a-zA-Z0-9_]`
+            
+            # 48 - 57
+            for($i = 48; $i <= 57; $i++) {
+                $head->addLiteral(chr($i));
+            }
+            
+            # 65 - 90
+            for($i = 65; $i <= 90; $i++) {
+                $head->addLiteral(chr($i));
+            }
+            
+            # 95
+            $head->addLiteral(chr(95));
+            
+            # 97 - 122
+            for($i = 97; $i <= 122; $i++) {
+                $head->addLiteral(chr($i));
+            }
+            
+        } else {
+           # `![a-zA-Z0-9_]`    
+           
+           # 0 - 47
+           for($i = 0; $i <= 47; $i++) {
+                $head->addLiteral(chr($i));
+           }
+           
+           # 58 - 64
+           for($i = 58; $i <= 64; $i++) {
+                $head->addLiteral(chr($i));
+           }
+           
+           # 91 - 94
+           for($i = 91; $i <= 94; $i++) {
+                $head->addLiteral(chr($i));
+           }
+            
+           # 96   
+           $head->addLiteral(chr(96));
+           
+           # 123 - 127
+           for($i = 123; $i <= 127; $i++) {
+               $head->addLiteral(chr($i));
+           }
+           
+        }
     }
     
     public function convertWhiteSpaceToRange(Scope $head, Scope $result, Lexer $lexer)
     {
+        if($lexer->lookahead['type'] === Lexer::T_SHORT_S) {
+            # spaces, tabs, and line breaks
+            #0009 #0010 #0012 #0013 #0032
+            
+            $head->addLiteral(chr(9));
+            $head->addLiteral(chr(10));
+            $head->addLiteral(chr(12));
+            $head->addLiteral(chr(13));
+            $head->addLiteral(chr(32));
         
+        } else {
+            # not spaces, tabs, and line breaks
+            #0000-0008  #0011  #0014 - #0031
+            
+            for($i=0; $i <= 8; $i++) {
+                $head->addLiteral(chr($i));
+            }
+            
+            $head->addLiteral(chr(11));
+            
+            for($i=14; $i <= 31; $i++) {
+                $head->addLiteral(chr($i));
+            }
+        }
     }
     
 }
