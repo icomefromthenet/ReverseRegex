@@ -19,8 +19,6 @@ class Scope extends Node implements ContextInterface, RepeatInterface, Alternate
     
     const REPEAT_MAX_INDEX  = 'repeat_max'; 
     
-    const ALTERNATING_POSITION_INDEX = 'alternating_position';
-    
     const USE_ALTERNATING_INDEX = 'use_alternating';
     
     
@@ -32,7 +30,6 @@ class Scope extends Node implements ContextInterface, RepeatInterface, Alternate
         parent::__construct($label);
 
         $this[self::USE_ALTERNATING_INDEX] = false;
-        $this->resetAlternatingPosition();
 
         $this->setMinOccurances(1);
         $this->setMaxOccurances(1);
@@ -58,12 +55,33 @@ class Scope extends Node implements ContextInterface, RepeatInterface, Alternate
         
         $repeat_x = $this->calculateRepeatQuota($generator);
         
+        # rewind the current item 
+        $this->rewind();
+        $first = true;
         while($repeat_x > 0) {
             
-            foreach($this as $current) {
-                $current->generate($result,$generator);    
+            if($this->usingAlternatingStrategy()) {
+                
+                if($first === false) {
+                    $this->next();
+                }
+                
+                # check if current is valid
+                if($this->current() === null) {
+                    $this->rewind();
+                }
+                
+                $this->current()->generate($result,$generator);    
+                                
+            } else {
+                
+                foreach($this as $current) {
+                    $current->generate($result,$generator);    
+                }    
+                
             }
             
+            $first = false;
             $repeat_x = $repeat_x -1;
         }
         
@@ -198,36 +216,14 @@ class Scope extends Node implements ContextInterface, RepeatInterface, Alternate
     }
     
     /**
-      *  Set the alternating position to zero
+      *  Return true if setting been activated
       *
       *  @access public
-      *  @return void
+      *  @return boolean true
       */
-    public function resetAlternatingPosition()
+    public function usingAlternatingStrategy()
     {
-        $this[self::ALTERNATING_POSITION_INDEX]= 0;
-    }
-    
-    /**
-      *  Increment the alternating position by one
-      *
-      *  @access public
-      *  @return void
-      */
-    public function incrementAlternatingPosition()
-    {
-        $this[self::ALTERNATING_POSITION_INDEX] = $this[self::ALTERNATING_POSITION_INDEX] + 1;
-    }
-    
-    /**
-      *  Fetch the alternating position
-      *
-      *  @access public
-      *  @return integer the position
-      */
-    public function getAlternatingPosition()
-    {
-        return $this[self::ALTERNATING_POSITION_INDEX];
+        return (boolean) $this[self::USE_ALTERNATING_INDEX];
     }
     
 }

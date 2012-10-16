@@ -3,6 +3,7 @@ namespace ReverseRegex\Test;
 
 use ReverseRegex\Generator\Scope;
 use PHPStats\Generator\MersenneRandom;
+use ReverseRegex\Generator\LiteralScope;
 
 class ScopeTest extends Basic
 {
@@ -35,11 +36,10 @@ class ScopeTest extends Basic
     public function testAlternateInterface()
     {
         $scope = new Scope('scope1');
+        $this->assertFalse($scope->usingAlternatingStrategy());
+        
         $scope->useAlternatingStrategy(true);
-        $scope->incrementAlternatingPosition();
-        $this->assertEquals(1,$scope->getAlternatingPosition());
-        $scope->resetAlternatingPosition();
-        $this->assertEquals(0,$scope->getAlternatingPosition());
+        $this->assertTrue($scope->usingAlternatingStrategy());
     }
     
         
@@ -126,6 +126,8 @@ class ScopeTest extends Basic
     {
         $scope = new Scope('scope1');
         
+     
+        
         for($i = 1; $i <= 6; $i++) {
             $scope->attach(new Scope('label_'.$i));    
         }
@@ -145,6 +147,29 @@ class ScopeTest extends Basic
         
         $other_scope = $scope->get(0);
         $this->assertEquals(null,$other_scope);
+    }
+    
+    
+    public function testGenerateWithAlternatingStrategy()
+    {
+        $scope  = new Scope('scope1');
+        $gen    = new MersenneRandom(700);
+        $result = '';
+        
+        $scope->setMinOccurances(7);
+        $scope->setMaxOccurances(7);
+        
+        for($i = 1; $i <= 6; $i++) {
+            $lit = new LiteralScope('label_'.$i);
+            $lit->addLiteral($i);
+            $scope->attach($lit);
+            $lit = null;
+        }
+        
+        $scope->useAlternatingStrategy();
+        $scope->generate($result,$gen);
+        $this->assertEquals('1234561',$result);
+        
     }
     
 }

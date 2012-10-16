@@ -18,28 +18,12 @@ interface AlternateInterface
     public function useAlternatingStrategy();
     
     /**
-      *  Set the alternating position to zero
+      *  Return true if setting been activated
       *
       *  @access public
-      *  @return void
+      *  @return boolean true
       */
-    public function resetAlternatingPosition();
-    
-    /**
-      *  Increment the alternating position by one
-      *
-      *  @access public
-      *  @return void
-      */
-    public function incrementAlternatingPosition();
-    
-    /**
-      *  Fetch the alternating position
-      *
-      *  @access public
-      *  @return integer the position
-      */
-    public function getAlternatingPosition();
+    public function usingAlternatingStrategy();
         
 }
 /* End of File */

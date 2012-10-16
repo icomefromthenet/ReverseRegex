@@ -112,7 +112,7 @@ class Parser
                         
                         # character classes [a-z]
                         $scope  = new LiteralScope();
-                        $parser = self::createSubParser('character')->parse($scope,$this->head,$lexer);
+                        $result = self::createSubParser('character')->parse($scope,$this->head,$this->lexer);
                         $this->head->attach($scope);
                             
                     break;
@@ -127,7 +127,7 @@ class Parser
                         
                         # match short (. \d \D \w \W \s \S)
                         $scope  = new LiteralScope();
-                        $parser = self::createSubParser('short')->parse($scope,$this->head,$lexer);
+                        $parser = self::createSubParser('short')->parse($scope,$this->head,$this->lexer);
                         $this->head->attach($scope);
                         
                     break;
@@ -138,7 +138,7 @@ class Parser
                         
                         # match short (\p{L} \x \X  )
                         $scope  = new LiteralScope();
-                        $parser = self::createSubParser('unicode')->parse($scope,$this->head,$lexer);
+                        $parser = self::createSubParser('unicode')->parse($scope,$this->head,$this->lexer);
                         $this->head->attach($scope);
                         
                     break;
@@ -151,19 +151,19 @@ class Parser
                                                              ))):
                         
                         # match quantifiers 
-                        $parser = self::createSubParser('quantifer')->parse($this->head,$this->head,$lexer);
-                        $this->head->attach($scope);
+                        $parser = self::createSubParser('quantifer')->parse($this->head,$this->head,$this->lexer);
                         
                     break;
                     case ($this->lexer->isNextToken(Lexer::T_CHOICE_BAR)):
                         
                         # match alternations
                         $this->head = new Scope();
+                        $this->result->useAlternatingStrategy();
                         $this->result->attach($this->head); 
                         
                     break;    
                     default:
-                        throw new ParserException('No Parse Action Taken');
+                        # ignore character 
                 }    
                 
                 
