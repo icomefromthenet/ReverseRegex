@@ -12,47 +12,32 @@ use ReverseRegex\Exception as GeneratorException;
   *  @author Lewis Dyer <getintouch@icomefromthenet.com>
   *  @since 0.0.1
   */
-class Scope extends Node implements ContextInterface, RepeatInterface
+class Scope extends Node implements ContextInterface, RepeatInterface, AlternateInterface
 {
     
     const REPEAT_MIN_INDEX  = 'repeat_min';
     
     const REPEAT_MAX_INDEX  = 'repeat_max'; 
     
+    const ALTERNATING_POSITION_INDEX = 'alternating_position';
     
-    protected $parent;
+    const USE_ALTERNATING_INDEX = 'use_alternating';
     
     
+    /**
+      *  Class Constructor 
+      */
     public function __construct($label = self::TEMPLATE_LABEL)
     {
         parent::__construct($label);
+
+        $this[self::USE_ALTERNATING_INDEX] = false;
+        $this->resetAlternatingPosition();
 
         $this->setMinOccurances(1);
         $this->setMaxOccurances(1);
     }
     
-    
-    /**
-      *  Return the parent scope
-      *
-      *  @access public
-      *  @return GraphGroup\Object\Node;
-      */
-    public function getParentScope()
-    {
-        return $this->parent;
-    }
-    
-    /**
-      *  Sets the parent scope
-      *
-      *  @access public
-      *  @param  GraphGroup\Object\Node $parent
-      */
-    public function setParentScope(Node $parent)
-    {
-        $this->parent = $parent;
-    }
     
     //  ----------------------------------------------------------------------------
     # Conext Interface
@@ -84,6 +69,29 @@ class Scope extends Node implements ContextInterface, RepeatInterface
         
         
         return $result;
+    }
+    
+    
+    /**
+      *  Fetch a node given an `one-based index`
+      *
+      *  @access public
+      *  @return Scope | null if none found
+      */
+    public function get($index)
+    {
+        if($index > $this->count() || $index <= 0) {
+            return null;
+        }
+        
+        $this->rewind();
+        while(($index - 1) > 0) {
+            $this->next();
+            $index = $index - 1;
+        }
+        
+        return $this->current();
+        
     }
     
     
@@ -172,6 +180,54 @@ class Scope extends Node implements ContextInterface, RepeatInterface
         } 
         
         return $repeat_x;
+    }
+    
+    //------------------------------------------------------------------
+    # AlternateInterface
+    
+    
+    /**
+      *  Tell the scope to select childing use alternating strategy
+      *
+      *  @access public
+      *  @return void
+      */    
+    public function useAlternatingStrategy()
+    {
+        $this[self::USE_ALTERNATING_INDEX] = true;
+    }
+    
+    /**
+      *  Set the alternating position to zero
+      *
+      *  @access public
+      *  @return void
+      */
+    public function resetAlternatingPosition()
+    {
+        $this[self::ALTERNATING_POSITION_INDEX]= 0;
+    }
+    
+    /**
+      *  Increment the alternating position by one
+      *
+      *  @access public
+      *  @return void
+      */
+    public function incrementAlternatingPosition()
+    {
+        $this[self::ALTERNATING_POSITION_INDEX] = $this[self::ALTERNATING_POSITION_INDEX] + 1;
+    }
+    
+    /**
+      *  Fetch the alternating position
+      *
+      *  @access public
+      *  @return integer the position
+      */
+    public function getAlternatingPosition()
+    {
+        return $this[self::ALTERNATING_POSITION_INDEX];
     }
     
 }

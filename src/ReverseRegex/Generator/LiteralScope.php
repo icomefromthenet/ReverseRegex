@@ -96,6 +96,8 @@ class LiteralScope extends Scope
         return $result;
         
     }
+    
+    
 
 }
 /* End of File */

@@ -28,7 +28,7 @@ class CharacterClass implements StrategyInterface
     public function normalize(Scope $head, Scope $set, Lexer $lexer)
     {
         $collection = array();
-        
+        $unicode = new Unicode();
         
         while($lexer->moveNext() && !$lexer->isNextToken(Lexer::T_SET_CLOSE)) {
             
@@ -36,10 +36,7 @@ class CharacterClass implements StrategyInterface
             
             switch(true) {
                 case($lexer->isNextTokenAny(array(Lexer::T_SHORT_UNICODE_X, Lexer::T_SHORT_P,Lexer::T_SHORT_X))):
-                    $unicode = new Unicode();
-                    $decoded = $unicode->parse(new LiteralScope(),$head,$lexer);
-                    $value = implode('',$decoded->getLiterals()->toArray());
-                    $collection[] = $value;
+                    $collection[] = $unicode->evaluate($lexer);
                 break;
                 case($lexer->isNextTokenAny(array(Lexer::T_LITERAL_CHAR, Lexer::T_LITERAL_NUMERIC))):
                     $collection[] = $lexer->lookahead['value'];

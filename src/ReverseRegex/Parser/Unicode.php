@@ -26,6 +26,17 @@ class Unicode implements StrategyInterface
       */
     public function parse(Scope $head, Scope $set, Lexer $lexer)
     {
+        $character = $this->evaluate($lexer);
+        $head->addLiteral($character);
+        return $head;
+    }
+    
+    
+    /**
+      *  Parse a reference 
+      */
+    public function evaluate(Lexer $lexer)
+    {
         switch(true) {
             case ($lexer->isNextToken(Lexer::T_SHORT_P)) :
                 throw new ParserException('Property \p (Unicode Property) not supported use \x to specify unicode character or range');
@@ -61,9 +72,8 @@ class Unicode implements StrategyInterface
                 }
                 
                 $number    = trim(implode('',$tokens));
-                $character = Utf8::chr(hexdec($number));
                 
-                $head->addLiteral($character);
+                return Utf8::chr(hexdec($number));
                 
             break;
             case ($lexer->isNextToken(Lexer::T_SHORT_X)) :
@@ -81,21 +91,13 @@ class Unicode implements StrategyInterface
                 }
                 
                 $value     = trim(implode('',$tokens));
-                $character = Utf8::chr(hexdec($value));
-                $head->addLiteral($character);
-                
+                return Utf8::chr(hexdec($value));
             break;
             default :
-                //do nothing no token matches found
+                throw new ParserException('No Unicode expression to evaluate');
         }
         
-        return $head;
-        
     }
-    
-    
-    
-    
     
 }
 /* End of File */

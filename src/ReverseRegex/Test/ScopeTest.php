@@ -25,17 +25,24 @@ class ScopeTest extends Basic
         $this->assertInstanceOf('GraphGroup\Object\Node',$scope);
     }
     
-    public function testScopeParentNode()
+    public function testScopeImplementsAlternateInterface()
     {
-        $parent = new Scope('scope1');
-        $scope  = new Scope('scope2');
-        
-        $scope->setParentScope($parent);
-        
-        $this->assertSame($parent,$scope->getParentScope());
+        $scope = new Scope('scope1');
+        $this->assertInstanceOf('ReverseRegex\Generator\AlternateInterface',$scope);
+    }
+
+
+    public function testAlternateInterface()
+    {
+        $scope = new Scope('scope1');
+        $scope->useAlternatingStrategy(true);
+        $scope->incrementAlternatingPosition();
+        $this->assertEquals(1,$scope->getAlternatingPosition());
+        $scope->resetAlternatingPosition();
+        $this->assertEquals(0,$scope->getAlternatingPosition());
     }
     
-    
+        
     public function testRepeatInterface()
     {
         $scope  = new Scope('scope1');
@@ -51,7 +58,6 @@ class ScopeTest extends Basic
     
     public function testAttachChild()
     {
-        
        $scope  = new Scope('scope1');
        $scope2  = new Scope('scope2');
        
@@ -62,13 +68,13 @@ class ScopeTest extends Basic
     
     public function testRepeatQuota()
     {
-        $gen = new MersenneRandom(700);
+        $gen = new MersenneRandom(703);
         
         $scope = new Scope('scope1');
         $scope->setMinOccurances(1);
         $scope->setMaxOccurances(6);
         
-        $this->assertEquals(4,$scope->calculateRepeatQuota($gen));
+        $this->assertEquals(6,$scope->calculateRepeatQuota($gen));
         
     }
     
@@ -114,6 +120,31 @@ class ScopeTest extends Basic
         
         $this->assertEquals('a',$result);
         
+    }
+    
+    public function testGetNode()
+    {
+        $scope = new Scope('scope1');
+        
+        for($i = 1; $i <= 6; $i++) {
+            $scope->attach(new Scope('label_'.$i));    
+        }
+        
+        $other_scope = $scope->get(6);
+        $this->assertInstanceOf('ReverseRegex\Generator\Scope',$other_scope);
+        $this->assertEquals('label_6',$other_scope->getLabel());
+        
+        $other_scope = $scope->get(1);
+        $this->assertInstanceOf('ReverseRegex\Generator\Scope',$other_scope);
+        $this->assertEquals('label_1',$other_scope->getLabel());
+        
+        
+        $other_scope = $scope->get(3);
+        $this->assertInstanceOf('ReverseRegex\Generator\Scope',$other_scope);
+        $this->assertEquals('label_3',$other_scope->getLabel());
+        
+        $other_scope = $scope->get(0);
+        $this->assertEquals(null,$other_scope);
     }
     
 }
