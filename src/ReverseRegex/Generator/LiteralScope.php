@@ -5,7 +5,7 @@ namespace ReverseRegex\Generator;
 
 use ReverseRegex\Generator\Scope;
 use PHPStats\Generator\GeneratorInterface;
-use Doctrine\Common\Collections\ArrayCollection;
+use ReverseRegex\ArrayCollection;
 use ReverseRegex\Exception as GeneratorException;
 
 /**
@@ -17,10 +17,11 @@ use ReverseRegex\Exception as GeneratorException;
 class LiteralScope extends Scope
 {
     /**
-      *  @var Doctrine\Common\Collections\ArrayCollection container for literals
+      *  @var ReverseRegex\ArrayCollection container for literals
       */
     protected $literals;
 
+    
     /**
       *  Class Constructor
       *
@@ -46,6 +47,18 @@ class LiteralScope extends Scope
         $this->literals->add($literal);
     }
 
+    /**
+      *  Sets a value on the internal collection using key
+      *
+      *  @access public
+      *  @param string $hex a hexidecimal number
+      *  @param string $literal the literal to store
+      */
+    public function setLiteral($hex,$literal)
+    {
+        $this->literals->set($hex,$literal);
+    }
+    
     /**
       *  Return the literal ArrayCollection
       *

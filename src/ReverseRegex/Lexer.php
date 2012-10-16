@@ -156,6 +156,11 @@ class Lexer extends BaseLexer
       */    
     protected $group_set = 0;
     
+    /**
+      *  @var number of characters parsed inside the set 
+      */
+    protected $set_internal_counter = 0;
+    
     
     //  ----------------------------------------------------------------------------
     # Doctrine\Common\Lexer Methods
@@ -199,14 +204,19 @@ class Lexer extends BaseLexer
             case ($value === '\\' && $this->escape_mode === false) :
                   $this->escape_mode = true;
                   $type = self::T_ESCAPE_CHAR;
+                  
+                  if($this->set_mode === true) {
+                    $this->set_internal_counter++;
+                  }
+                  
             break;      
             
             // Groups
-            case ($value === '(' && $this->escape_mode === false) :
+            case ($value === '(' && $this->escape_mode === false && $this->set_mode === false) :
                   $type = self::T_GROUP_OPEN;
                   $this->group_set++;
             break;
-            case ($value === ')' && $this->escape_mode === false) :
+            case ($value === ')' && $this->escape_mode === false && $this->set_mode === false) :
                   $type = self::T_GROUP_CLOSE;
                   $this->group_set--;
             break;
@@ -221,14 +231,21 @@ class Lexer extends BaseLexer
             case ($value === '[' && $this->escape_mode === false && $this->set_mode === false) :
                 $this->set_mode = true;
                 $type = self::T_SET_OPEN;
+                $this->set_internal_counter = 1;
             break;
             case ($value === ']' && $this->escape_mode === false && $this->set_mode === true) :
                 $this->set_mode = false;
                 $type = self::T_SET_CLOSE;
+                $this->set_internal_counter = 0;
             break;
-            case ($value === '-' && $this->escape_mode === false && $this->set_mode === true)  : return self::T_SET_RANGE;
-            case ($value === '^' && $this->escape_mode === false && $this->set_mode === true)  : return self::T_SET_NEGATED; 
-        
+            case ($value === '-' && $this->escape_mode === false && $this->set_mode === true)  :
+                $this->set_internal_counter++;
+                return self::T_SET_RANGE;
+            break;
+            case ($value === '^' && $this->escape_mode === false && $this->set_mode === true && $this->set_internal_counter === 1)  :
+                $this->set_internal_counter++;
+                return self::T_SET_NEGATED; 
+            break;
             // Quantifers
             case ($value === '{' && $this->escape_mode === false && $this->set_mode === false) : return self::T_QUANTIFIER_OPEN;
             case ($value === '}' && $this->escape_mode === false && $this->set_mode === false) : return self::T_QUANTIFIER_CLOSE;
@@ -271,14 +288,29 @@ class Lexer extends BaseLexer
             case ($value === 'x' && $this->escape_mode === true) :
                 $type = self::T_SHORT_X;
                 $this->escape_mode = false;
+                
+                if($this->set_mode === true) {
+                    $this->set_internal_counter++;
+                }
+                
             break;
             case ($value === 'X' && $this->escape_mode === true) :
                 $type = self::T_SHORT_UNICODE_X;
                 $this->escape_mode = false;
+                
+                if($this->set_mode === true) {
+                    $this->set_internal_counter++;
+                }
+                
             break;
-            case ($value === 'p' || $value === 'P' && $this->escape_mode === true) :
+            case (($value === 'p' || $value === 'P') && $this->escape_mode === true) :
                 $type = self::T_SHORT_P;
                 $this->escape_mode = false;
+                
+                if($this->set_mode === true) {
+                    $this->set_internal_counter++;
+                }
+                
             break;
                             
             // Default 
@@ -288,6 +320,11 @@ class Lexer extends BaseLexer
                 } else {
                     $type = self::T_LITERAL_CHAR;    
                 }
+                
+                if($this->set_mode === true) {
+                    $this->set_internal_counter++;
+                }
+                
                 
                 $this->escape_mode = false;
         }

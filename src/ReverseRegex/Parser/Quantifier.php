@@ -20,23 +20,23 @@ class Quantifier implements StrategyInterface
       *  @access public
       *  @return ReverseRegex\Generator\Scope a new head
       *  @param ReverseRegex\Generator\Scope $head
-      *  @param ReverseRegex\Generator\Scope $result
+      *  @param ReverseRegex\Generator\Scope $set
       *  @param ReverseRegex\Lexer $lexer
       */
-    public function parse(Scope $head, Scope $result, Lexer $lexer)
+    public function parse(Scope $head, Scope $set, Lexer $lexer)
     {
         switch(true) {
-            case ($lexer->lookahead['type'] === Lexer::T_QUANTIFIER_PLUS) :
-                $head = $this->quantifyPlus($head,$result,$lexer);
+            case ($lexer->isNextToken(Lexer::T_QUANTIFIER_PLUS)) :
+                $head = $this->quantifyPlus($head,$set,$lexer);
             break;
-            case ($lexer->lookahead['type'] === Lexer::T_QUANTIFIER_QUESTION) :
-                $head = $this->quantifyQuestion($head,$result,$lexer);
+            case ($lexer->isNextToken(Lexer::T_QUANTIFIER_QUESTION)) :
+                $head = $this->quantifyQuestion($head,$set,$lexer);
             break;
-            case ($lexer->lookahead['type'] === Lexer::T_QUANTIFIER_STAR) :
-                $head = $this->quantifyStar($head,$result,$lexer);
+            case ($lexer->isNextToken(Lexer::T_QUANTIFIER_STAR)) :
+                $head = $this->quantifyStar($head,$set,$lexer);
             break;
-             case ($lexer->lookahead['type'] === Lexer::T_QUANTIFIER_OPEN) :
-                $head = $this->quantifyClosure($head,$result,$lexer);
+             case ($lexer->isNextToken(Lexer::T_QUANTIFIER_OPEN)) :
+                $head = $this->quantifyClosure($head,$set,$lexer);
             break;
             default :
                 //do nothing no token matches found
@@ -124,16 +124,13 @@ class Quantifier implements StrategyInterface
         $max = $head->getMaxOccurances();
         
         # move to the first token inside the quantifer.
-        $lexer->moveNext();
-        
         # parse for the minimum , move lookahead until read end of the closure or the `,`
-        while($lexer->lookahead !== null && $lexer->lookahead['type']  !== Lexer::T_QUANTIFIER_CLOSE && $lexer->lookahead['value'] !== ',' ) {
+        while($lexer->moveNext() === true && !$lexer->isNextToken(Lexer::T_QUANTIFIER_CLOSE) && $lexer->lookahead['value'] !== ',' ) {
 
-            if($lexer->lookahead['type']  === Lexer::T_QUANTIFIER_OPEN) {
+            if($lexer->isNextToken(Lexer::T_QUANTIFIER_OPEN)) {
                 throw new ParserException('Nesting Quantifiers is not allowed');
             }
             $tokens[] = $lexer->lookahead;
-            $lexer->moveNext();   
         }
         
         $min = $this->convertInteger($tokens);
@@ -145,17 +142,14 @@ class Quantifier implements StrategyInterface
             $tokens = array();
             
              # move to the first token after the `,` character 
-            $lexer->moveNext();
-            
             # grab the remaining numbers
-            while($lexer->lookahead !== null && $lexer->lookahead['type']  !== Lexer::T_QUANTIFIER_CLOSE) {
+            while($lexer->moveNext() && !$lexer->isNextToken(Lexer::T_QUANTIFIER_CLOSE)) {
                 
-                if($lexer->lookahead['type']  === Lexer::T_QUANTIFIER_OPEN) {
+                if($lexer->isNextToken(Lexer::T_QUANTIFIER_OPEN)) {
                     throw new ParserException('Nesting Quantifiers is not allowed');
                 }
                 
                 $tokens[] = $lexer->lookahead;
-                $lexer->moveNext();   
             }
             
             $max = $this->convertInteger($tokens);
@@ -173,7 +167,7 @@ class Quantifier implements StrategyInterface
         
         # check if the last matched token was the closing bracket
         # not going to stop errors like {#####,###{[a-z]} {#####{[a-z]}
-        if($lexer->lookahead['type'] !== Lexer::T_QUANTIFIER_CLOSE) {
+        if(!$lexer->isNextToken(Lexer::T_QUANTIFIER_CLOSE)) {
             throw new ParserException('Closing quantifier token `}` not found');     
         }
         

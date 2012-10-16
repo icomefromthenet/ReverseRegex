@@ -19,10 +19,10 @@ interface StrategyInterface
       *  @access public
       *  @return ReverseRegex\Generator\Scope a new head
       *  @param ReverseRegex\Generator\Scope $head
-      *  @param ReverseRegex\Generator\Scope $result
+      *  @param ReverseRegex\Generator\Scope $set
       *  @param ReverseRegex\Lexer $lexer
       */
-    public function parse(Scope $head, Scope $result, Lexer $lexer);
+    public function parse(Scope $head, Scope $set, Lexer $lexer);
     
     
 }

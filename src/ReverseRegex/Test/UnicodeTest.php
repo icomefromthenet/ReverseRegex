@@ -160,7 +160,6 @@ class UnicodeTest extends Basic
         
     }
     
-   
     
 }
 /* End of File */

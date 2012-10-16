@@ -22,26 +22,26 @@ class Short implements StrategyInterface
       *  @access public
       *  @return ReverseRegex\Generator\Scope a new head
       *  @param ReverseRegex\Generator\Scope $head
-      *  @param ReverseRegex\Generator\Scope $result
+      *  @param ReverseRegex\Generator\Scope $set
       *  @param ReverseRegex\Lexer $lexer
       */
-    public function parse(Scope $head, Scope $result, Lexer $lexer)
+    public function parse(Scope $head, Scope $set, Lexer $lexer)
     {
         switch(true) {
-            case ($lexer->lookahead['type'] === Lexer::T_DOT) :
-                $this->convertDotToRange($head,$result,$lexer);
+            case ($lexer->isNextToken(Lexer::T_DOT)) :
+                $this->convertDotToRange($head,$set,$lexer);
             break;
-            case ($lexer->lookahead['type'] === Lexer::T_SHORT_D) :
-            case ($lexer->lookahead['type'] === Lexer::T_SHORT_NOT_D) :
-                $this->convertDigitToRange($head,$result,$lexer);
+            case ($lexer->isNextToken(Lexer::T_SHORT_D)) :
+            case ($lexer->isNextToken(Lexer::T_SHORT_NOT_D)) :
+                $this->convertDigitToRange($head,$set,$lexer);
             break;
-            case ($lexer->lookahead['type'] === Lexer::T_SHORT_W) :
-            case ($lexer->lookahead['type'] === Lexer::T_SHORT_NOT_W) :
-                $this->convertWordToRange($head,$result,$lexer);
+            case ($lexer->isNextToken(Lexer::T_SHORT_W)) :
+            case ($lexer->isNextToken(Lexer::T_SHORT_NOT_W)) :
+                $this->convertWordToRange($head,$set,$lexer);
             break;
-            case ($lexer->lookahead['type'] === Lexer::T_SHORT_S) :
-            case ($lexer->lookahead['type'] === Lexer::T_SHORT_NOT_S) :
-                $this->convertWhiteSpaceToRange($head,$result,$lexer);
+            case ($lexer->isNextToken(Lexer::T_SHORT_S)) :
+            case ($lexer->isNextToken(Lexer::T_SHORT_NOT_S)) :
+                $this->convertWhiteSpaceToRange($head,$set,$lexer);
             break;
             default :
                 //do nothing no token matches found
@@ -59,7 +59,7 @@ class Short implements StrategyInterface
     
     public function convertDigitToRange(Scope $head, Scope $result, Lexer $lexer)
     {
-        if($lexer->lookahead['type'] === Lexer::T_SHORT_D) {
+        if($lexer->isNextToken(Lexer::T_SHORT_D)) {
             # digits only (0048 - 0057) digits      
             $min = 48;
             $max = 57;
@@ -92,7 +92,7 @@ class Short implements StrategyInterface
     
     public function convertWordToRange(Scope $head, Scope $result, Lexer $lexer)
     {
-        if($lexer->lookahead['type'] === Lexer::T_SHORT_W) {
+        if($lexer->isNextToken(Lexer::T_SHORT_W)) {
             # `[a-zA-Z0-9_]`
             
             # 48 - 57
@@ -144,7 +144,7 @@ class Short implements StrategyInterface
     
     public function convertWhiteSpaceToRange(Scope $head, Scope $result, Lexer $lexer)
     {
-        if($lexer->lookahead['type'] === Lexer::T_SHORT_S) {
+        if($lexer->isNextToken(Lexer::T_SHORT_S)) {
             # spaces, tabs, and line breaks
             #0009 #0010 #0012 #0013 #0032
             

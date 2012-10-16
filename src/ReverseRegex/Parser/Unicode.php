@@ -21,16 +21,16 @@ class Unicode implements StrategyInterface
       *  @access public
       *  @return ReverseRegex\Generator\Scope a new head
       *  @param ReverseRegex\Generator\LiteralScope $head
-      *  @param ReverseRegex\Generator\Scope $result
+      *  @param ReverseRegex\Generator\Scope $set
       *  @param ReverseRegex\Lexer $lexer
       */
-    public function parse(Scope $head, Scope $result, Lexer $lexer)
+    public function parse(Scope $head, Scope $set, Lexer $lexer)
     {
         switch(true) {
-            case ($lexer->lookahead['type'] === Lexer::T_SHORT_P) :
+            case ($lexer->isNextToken(Lexer::T_SHORT_P)) :
                 throw new ParserException('Property \p (Unicode Property) not supported use \x to specify unicode character or range');
             break;
-            case ($lexer->lookahead['type'] === Lexer::T_SHORT_UNICODE_X) :
+            case ($lexer->isNextToken(Lexer::T_SHORT_UNICODE_X)) :
                 
                 $lexer->moveNext();
                 if($lexer->lookahead['value'] !== '{' )  {
@@ -38,8 +38,7 @@ class Unicode implements StrategyInterface
                 }
                 
                 $tokens = array();
-                $lexer->moveNext();
-                while($lexer->lookahead !== null && $lexer->lookahead['value']  !== '}') {
+                while($lexer->moveNext() && $lexer->lookahead['value']  !== '}') {
                     
                     # check if we nested eg.{ddd{d}
                     if($lexer->lookahead['value']  === '{') {
@@ -51,7 +50,6 @@ class Unicode implements StrategyInterface
                     }
                 
                     $tokens[] = $lexer->lookahead['value'];
-                    $lexer->moveNext();   
                 }
                 # check that current lookahead is a closing character as it's possible to iterate to end of string (i.e. lookahead === null)
                 if($lexer->lookahead['value'] !== '}') {
@@ -68,18 +66,17 @@ class Unicode implements StrategyInterface
                 $head->addLiteral($character);
                 
             break;
-            case ($lexer->lookahead['type'] === Lexer::T_SHORT_X) :
+            case ($lexer->isNextToken(Lexer::T_SHORT_X)) :
                 // only allow another 2 hex characters
-                $lexer->moveNext();
-                if($lexer->lookahead['value']  === '{') {
-                        throw new ParserException('Braces not supported here');
+                $glimpse = $lexer->glimpse();
+                if($glimpse['value']  === '{') {
+                    throw new ParserException('Braces not supported here');
                 }
                 
                 $tokens = array();
                 $count = 2;
-                while($lexer->lookahead['type'] === Lexer::T_LITERAL_CHAR || $lexer->lookahead['type'] === Lexer::T_LITERAL_NUMERIC && $count > 0) {
+                while($count > 0 && $lexer->moveNext()) {
                     $tokens[] = $lexer->lookahead['value'];
-                    $lexer->moveNext();
                     --$count;
                 }
                 

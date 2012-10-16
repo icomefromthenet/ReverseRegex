@@ -534,6 +534,105 @@ class LexerTest extends Basic
     }
     
     
+    public function testUnicodePropertyinCharacterClass()
+    {
+        $lexer = new Lexer('[np\p{L}]');
+        
+        $lexer->moveNext();
+        $this->assertEquals('[',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_SET_OPEN,$lexer->lookahead['type']);
+
+        $lexer->moveNext();
+        $this->assertEquals('n',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('p',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('\\',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_ESCAPE_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('p',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_SHORT_P,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('{',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('L',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('}',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals(']',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_SET_CLOSE,$lexer->lookahead['type']);
+        
+    }
+    
+    
+    public function testUnicodeReferencePropertyinCharacterClass()
+    {
+        
+        $lexer = new Lexer('[no\X{00FF}]');
+        
+        $lexer->moveNext();
+        $this->assertEquals('[',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_SET_OPEN,$lexer->lookahead['type']);
+
+        $lexer->moveNext();
+        $this->assertEquals('n',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('o',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('\\',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_ESCAPE_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('X',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_SHORT_UNICODE_X,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('{',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('0',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_NUMERIC,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('0',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_NUMERIC,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('F',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('F',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_CHAR,$lexer->lookahead['type']);
+        
+        $lexer->moveNext();
+        $this->assertEquals('}',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_LITERAL_CHAR,$lexer->lookahead['type']);
+        
+        
+        $lexer->moveNext();
+        $this->assertEquals(']',$lexer->lookahead['value']);
+        $this->assertEquals(Lexer::T_SET_CLOSE,$lexer->lookahead['type']);
+    }
+    
+    
     public function testCarretAndDollar()
     {
         $lexer = new Lexer('^$');

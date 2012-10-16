@@ -114,5 +114,21 @@ class LiteralScopeTest extends Basic
         $this->assertGreaterThanOrEqual(1, strlen($result));
     }
     
+    public function testSetLiteral()
+    {
+        $literal = new LiteralScope('scope1');
+        $literal->setLiteral('0001','a');
+        $literal->setLiteral('0002','b');
+        $literal->setLiteral('0003','c');
+        $literal->setLiteral('0004','d');
+        
+        $result = $literal->getLiterals()->toArray();
+        
+        $this->assertArrayHasKey('0001',$result);
+        $this->assertArrayHasKey('0002',$result);
+        $this->assertArrayHasKey('0003',$result);
+        $this->assertArrayHasKey('0004',$result);
+    }
+    
 }
 /* End of File */
