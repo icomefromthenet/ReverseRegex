@@ -27,7 +27,7 @@ class LiteralScope extends Scope
       *  @param string $label
       *  @param Node $parent
       */
-    public function __construct($label = self::TEMPLATE_LABEL)
+    public function __construct($label = 'label')
     {
         parent::__construct($label);
         

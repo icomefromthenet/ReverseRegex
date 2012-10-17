@@ -23,7 +23,7 @@ class ScopeTest extends Basic
     public function testScopeExtendsNode()
     {
         $scope = new Scope('scope1');
-        $this->assertInstanceOf('GraphGroup\Object\Node',$scope);
+        $this->assertInstanceOf('ReverseRegex\Generator\Node',$scope);
     }
     
     public function testScopeImplementsAlternateInterface()

@@ -1,8 +1,6 @@
 <?php
 namespace ReverseRegex\Generator;
 
-
-use GraphGroup\Object\Node;
 use PHPStats\Generator\GeneratorInterface;
 use ReverseRegex\Exception as GeneratorException;
 
@@ -25,7 +23,7 @@ class Scope extends Node implements ContextInterface, RepeatInterface, Alternate
     /**
       *  Class Constructor 
       */
-    public function __construct($label = self::TEMPLATE_LABEL)
+    public function __construct($label = 'node')
     {
         parent::__construct($label);
 

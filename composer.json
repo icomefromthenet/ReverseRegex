@@ -1,8 +1,19 @@
 {
+    "name": "icomefromthenet/reverse-regex",
+    "description": "Convert Regular Expressions into text, for testing",
+    "keywords": ["regex","testing","test data","generator"],
+    "homepage": "http://github.com/icomefromthenet/ReverseRegex",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lewis Dyer",
+            "email": "getintouch@icomefromthenet.com",
+            "homepage": "www.icomefromthenet.com"
+        }
+    ],
     "require": {
         "doctrine/common"      : "2.3.0",
-        "graphgroup/object"    : "dev-master",
-        "graphgroup/template"  : "dev-master",
         "patchwork/utf8"       : "dev-master"
     },
     "autoload": {
