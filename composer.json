@@ -1,19 +1,6 @@
 {
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "http://packages.zendframework.com/"
-        },
-        {
-            "type" : "vcs",
-            "url"  : "git://github.com/graphgroup/object.git"
-        }
-       
-    ],
     "require": {
         "doctrine/common"      : "2.3.0",
-        "monolog/monolog"      : "1.2.1",
-        "pimple/pimple"        : "dev-master",
         "graphgroup/object"    : "dev-master",
         "graphgroup/template"  : "dev-master",
         "patchwork/utf8"       : "dev-master"

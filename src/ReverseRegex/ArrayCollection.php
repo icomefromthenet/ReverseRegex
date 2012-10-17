@@ -26,6 +26,29 @@ class ArrayCollection extends BaseCollection
         return $this;
     }
     
+    /**
+      *  Fetch a value using ones based position 
+      *
+      *  @access public
+      *  @param integer $position
+      *  @return mixed | null if bad position
+      */
+    public function getAt($position)
+    {
+        if($position < $this->count() && $position < 0) {
+            return null;
+        }
+        
+        $this->first();
+        
+        while($position > 1) {
+            $this->next();
+            --$position;
+        }
+        
+        return $this->current();
+    }
+    
     
 }
 /* End of Class */

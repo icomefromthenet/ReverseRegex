@@ -168,7 +168,7 @@ class ScopeTest extends Basic
         
         $scope->useAlternatingStrategy();
         $scope->generate($result,$gen);
-        $this->assertEquals('1234561',$result);
+        $this->assertRegExp('/[1-6]{7}/',$result);
         
     }
     

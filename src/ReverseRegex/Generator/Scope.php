@@ -57,21 +57,11 @@ class Scope extends Node implements ContextInterface, RepeatInterface, Alternate
         
         # rewind the current item 
         $this->rewind();
-        $first = true;
         while($repeat_x > 0) {
             
             if($this->usingAlternatingStrategy()) {
-                
-                if($first === false) {
-                    $this->next();
-                }
-                
-                # check if current is valid
-                if($this->current() === null) {
-                    $this->rewind();
-                }
-                
-                $this->current()->generate($result,$generator);    
+                $randomIndex = \round($generator->generate(1,($this->count())));                
+                $this->get($randomIndex)->generate($result,$generator);    
                                 
             } else {
                 
@@ -81,7 +71,6 @@ class Scope extends Node implements ContextInterface, RepeatInterface, Alternate
                 
             }
             
-            $first = false;
             $repeat_x = $repeat_x -1;
         }
         

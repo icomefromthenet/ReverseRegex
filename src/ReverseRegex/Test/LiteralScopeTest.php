@@ -43,10 +43,8 @@ class LiteralScopeTest extends Basic
         
         $generator_mock = $this->getMock('PHPStats\Generator\GeneratorInterface', array('generate','seed','max'));
         
-        $generator_mock->expects($this->exactly(1))
-                       ->method('generate')
-                       ->with($this->equalTo(0),$this->equalTo(0))
-                       ->will($this->returnValue(0));
+        $generator_mock->expects($this->exactly(0))
+                       ->method('generate');
                        
         $result = '';
         $literal->generate($result,$generator_mock);
@@ -59,6 +57,7 @@ class LiteralScopeTest extends Basic
     {
         $literal = new LiteralScope('scope1');
         $literal->addLiteral('a');
+        $literal->addLiteral('b');
         $literal->setMinOccurances(2);
         $literal->setMaxOccurances(2);
         
@@ -66,7 +65,7 @@ class LiteralScopeTest extends Basic
         
         $generator_mock->expects($this->exactly(2))
                        ->method('generate')
-                       ->with($this->equalTo(0),$this->equalTo(0))
+                       ->with($this->equalTo(1),$this->equalTo(2))
                        ->will($this->returnValue(0));
                        
         $result = '';

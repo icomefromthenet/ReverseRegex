@@ -1,7 +1,5 @@
 <?php
-
 namespace ReverseRegex\Generator;
-
 
 use ReverseRegex\Generator\Scope;
 use PHPStats\Generator\GeneratorInterface;
@@ -17,7 +15,7 @@ use ReverseRegex\Exception as GeneratorException;
 class LiteralScope extends Scope
 {
     /**
-      *  @var ReverseRegex\ArrayCollection container for literals
+      *  @var ReverseRegex\ArrayCollection container for literals values
       */
     protected $literals;
 
@@ -48,7 +46,7 @@ class LiteralScope extends Scope
     }
 
     /**
-      *  Sets a value on the internal collection using key
+      *  Sets a value on the internal collection using a key
       *
       *  @access public
       *  @param string $hex a hexidecimal number
@@ -72,7 +70,7 @@ class LiteralScope extends Scope
     
     
     /**
-      *  Generate a text string appending to result arguments
+      *  Generate a text string appending to the result argument
       *
       *  @access public
       *  @param string $result
@@ -87,8 +85,13 @@ class LiteralScope extends Scope
        $repeat_x = $this->calculateRepeatQuota($generator);
         
         while($repeat_x > 0) {
-             $randomIndex = \round($generator->generate(0,($this->literals->count()-1)));        
-             $result     .= $this->literals->get($randomIndex);
+             $randomIndex = 0;
+             
+             if($this->literals->count() > 1) {
+                $randomIndex = \round($generator->generate(1,($this->literals->count())));        
+             }
+             
+             $result     .= $this->literals->getAt($randomIndex);
              
              --$repeat_x;
         }
@@ -96,8 +99,6 @@ class LiteralScope extends Scope
         return $result;
         
     }
-    
-    
 
 }
 /* End of File */

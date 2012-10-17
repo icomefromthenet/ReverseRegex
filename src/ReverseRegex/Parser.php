@@ -30,6 +30,10 @@ class Parser
       */
     protected $head;
     
+    /**
+      *  @var  ReverseRegex\Generator\Scope Last attached scope
+      */
+    protected $left;
     
     /**
       *  Class Constructor
@@ -50,6 +54,7 @@ class Parser
         
         $this->result->attach($head);
         
+        $this->left = $head;
     }
     
     
@@ -86,34 +91,37 @@ class Parser
                     case($this->lexer->isNextToken(Lexer::T_GROUP_OPEN)) :
                         
                         # is the group character the first token? is the regex wrapped in brackets. 
-                        if($this->lexer->token !== null) {
-                            continue;
-                        }
+                        //if($this->lexer->token === null) {
+                          //  continue;
+                        //}
                         
-                        # not this is a new group create new parser instance
+                        # note this is a new group create new parser instance.
                         $parser = new Parser($this->lexer,new Scope(),new Scope());
-                        $this->head->attach($parser->parse(true)->getResult());  
                         
+                        $this->left = $parser->parse(true)->getResult();
+                        $this->head->attach($this->left);  
                     
                     break;
                     case($this->lexer->isNextToken(Lexer::T_GROUP_CLOSE)) :
                         
-                        # group is finished don't want to contine this loop
-                        break;
+                        # group is finished don't want to contine this loop break = 2
+                        break 2;
                     break;
                     case ($this->lexer->isNextTokenAny(array(Lexer::T_LITERAL_CHAR,Lexer::T_LITERAL_NUMERIC))):    
                         
                         # test for literal characters (abcd)
-                        $scope = new LiteralScope();
-                        $scope->addLiteral($this->lexer->lookahead['value']);
-                        $this->head->attach($scope);
+                        $this->left = new LiteralScope();
+                        $this->left->addLiteral($this->lexer->lookahead['value']);
+                        $this->head->attach($this->left);
+                        
                     break;
                     case($this->lexer->isNextToken(Lexer::T_SET_OPEN)) :
                         
                         # character classes [a-z]
-                        $scope  = new LiteralScope();
-                        $result = self::createSubParser('character')->parse($scope,$this->head,$this->lexer);
-                        $this->head->attach($scope);
+                        $this->left = new LiteralScope();
+                        self::createSubParser('character')->parse($this->left,$this->head,$this->lexer);
+                        $this->head->attach($this->left);
+                        
                             
                     break;
                     case ($this->lexer->isNextTokenAny(array(
@@ -126,9 +134,10 @@ class Parser
                                                              Lexer::T_SHORT_NOT_S))):
                         
                         # match short (. \d \D \w \W \s \S)
-                        $scope  = new LiteralScope();
-                        $parser = self::createSubParser('short')->parse($scope,$this->head,$this->lexer);
-                        $this->head->attach($scope);
+                        $this->left = new LiteralScope();
+                        self::createSubParser('short')->parse($this->left,$this->head,$this->lexer);
+                        $this->head->attach($this->left);
+                        
                         
                     break;
                     case ($this->lexer->isNextTokenAny(array(
@@ -137,9 +146,10 @@ class Parser
                                                              Lexer::T_SHORT_X))):
                         
                         # match short (\p{L} \x \X  )
-                        $scope  = new LiteralScope();
-                        $parser = self::createSubParser('unicode')->parse($scope,$this->head,$this->lexer);
-                        $this->head->attach($scope);
+                        $this->left = new LiteralScope();
+                        self::createSubParser('unicode')->parse($this->left,$this->head,$this->lexer);
+                        $this->head->attach($this->left);
+                        
                         
                     break;
                     case ($this->lexer->isNextTokenAny(array(
@@ -151,15 +161,18 @@ class Parser
                                                              ))):
                         
                         # match quantifiers 
-                        $parser = self::createSubParser('quantifer')->parse($this->head,$this->head,$this->lexer);
+                        self::createSubParser('quantifer')->parse($this->left,$this->head,$this->lexer);
                         
                     break;
                     case ($this->lexer->isNextToken(Lexer::T_CHOICE_BAR)):
                         
                         # match alternations
+                        $this->left = $this->head;
+                        
                         $this->head = new Scope();
                         $this->result->useAlternatingStrategy();
-                        $this->result->attach($this->head); 
+                        $this->result->attach($this->head);
+                        
                         
                     break;    
                     default:
