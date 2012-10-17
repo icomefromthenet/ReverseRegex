@@ -1,19 +1,16 @@
 ReverseRegex
 ============
 
-Use Regular Expressions to generate text string in PHP.
+[![Build Status](https://travis-ci.org/icomefromthenet/ReverseRegex.png)](https://travis-ci.org/icomefromthenet/ReverseRegex)
 
-To install use composer
+Use Regular Expressions to generate text strings can be used in the following situations:
 
-```json
-{
-  "require" : {
-		"icomefromthenet/reverse-regex" : "dev-master"
-	}
-}
-```
+1. Wrting test data for web forms.
+2. Writing test data for databases.
+3. Generating test data for regular expressions. 
 
-#Example
+
+##Example
 
 ```php
 
@@ -36,7 +33,49 @@ echo $result;
 
 ```
 
-# Regex Support
+***Produces***
+
+```
+jmceohykoa
+aclohnotga
+jqegzuklcv
+ixdbpbgpkl
+kcyrxqqfyw
+jcxsjrtrqb
+kvaczmawlz
+itwrowxfxh
+auinmymonl
+dujyzuhoag
+vaygybwkfm
+```
+#### Other examples
+
+1. [Australian phone numbers](https://github.com/icomefromthenet/ReverseRegex/blob/master/examples/ausphone.php)
+2. [Australian postcodes](https://github.com/icomefromthenet/ReverseRegex/blob/master/examples/auspostcode.php)
+3. [Mobile numbers](https://github.com/icomefromthenet/ReverseRegex/blob/master/examples/mobilenumbers.php)
+
+
+##Installing
+
+To install use composer
+
+```json
+{
+  "require" : {
+	"icomefromthenet/reverse-regex" : "dev-master"
+    }
+}
+```
+## Writing a Regex
+
+1. Escape all meta-characters i.e. if you need to escape the character in a regex you will need to escape here.
+2. Not all meta-characters are suppported see list below.
+3. Use `\X{####}` to specify unicode value use `[\X{####}-\X{####}]` to specify range.
+4. Unicdoe `\p` not supported, I could not find a port of [UCD](http://www.unicode.org/ucd/) to php, maybe in the future support be added.
+5. Quantifiers are applied to left most group, literal or character class.
+6. Beware of the `+` and `*` quantifers they apply a possible maxium number of occurances up to `PHP_INT_MAX`.
+
+### Regex Support
 
 <table>
  <tr>
@@ -101,9 +140,6 @@ echo $result;
     <td> \xFF[\xFF-\xFF] </td><td> Hex ranges</td> <td> </td>  
   </tr>
  </table>
-
-## Real Examples
-
 
 
 
