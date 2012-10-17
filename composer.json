@@ -14,7 +14,7 @@
     ],
     "require": {
         "doctrine/common"      : "2.3.0",
-        "patchwork/utf8"       : "dev-master"
+        "patchwork/utf8"       : "1.0.1"
     },
     "autoload": {
         "psr-0": {
