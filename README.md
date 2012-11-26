@@ -103,13 +103,13 @@ To install use composer
   <td> a{5} </td> <td> Quantifiers supported always <strong>last</strong> group or literal or character class </td> <td>`aaaaa`</td>  
  </tr>
  <tr>
-  <td> a{1-5} </td> <td> Range Quantifiers supported</td> <td>`aa`</td>  
+  <td> a{1,5} </td> <td> Range Quantifiers supported</td> <td>`aa`</td>  
  </tr>
  <tr>
   <td> a|b|c </td> <td> Alternation supported pick one of three at random </td> <td>`b`</td>  
  </tr>
  <tr>
-  <td> a|(y|d){5} </td> <td> Groups supported with alternation and quantifiers </td> <td>`ddddd`</td>  
+  <td> a|(y|d){5} </td> <td> Groups supported with alternation and quantifiers </td> <td>`ddddd` or `a` or `yyyyy` </td>  
  </tr>
  <tr>
   <tr>
