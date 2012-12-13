@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "doctrine/common"      : "2.3.0",
+        "doctrine/common"      : "2.3.*",
         "patchwork/utf8"       : "1.0.1"
     },
     "autoload": {
