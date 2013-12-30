@@ -2,7 +2,7 @@
 namespace ReverseRegex\Test;
 
 use ReverseRegex\Generator\Scope;
-use PHPStats\Generator\MersenneRandom;
+use ReverseRegex\Random\MersenneRandom;
 use ReverseRegex\Generator\LiteralScope;
 
 class ScopeTest extends Basic
@@ -74,7 +74,7 @@ class ScopeTest extends Basic
         $scope->setMinOccurances(1);
         $scope->setMaxOccurances(6);
         
-        $this->assertEquals(6,$scope->calculateRepeatQuota($gen));
+        $this->assertEquals(3,$scope->calculateRepeatQuota($gen));
         
     }
     

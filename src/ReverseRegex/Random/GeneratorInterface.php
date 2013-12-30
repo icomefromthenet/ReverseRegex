@@ -1,5 +1,5 @@
 <?php
-namespace PHPStats\Generator;
+namespace ReverseRegex\Random;
 
 /**
   *  Interface that all generators should implement

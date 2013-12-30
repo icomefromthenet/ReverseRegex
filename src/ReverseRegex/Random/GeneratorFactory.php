@@ -1,27 +1,26 @@
 <?php
-namespace PHPStats\Generator;
+namespace ReverseRegex\Random;
 
-use PHPStats\ExtensionInterface,
-    PHPStats\Exception as PHPStatsException;
+use ReverseRegex\Exception as ReverseRegexException;
 
 /**
   *   Generator Factory
   *
   *   @author Lewis Dyer <getintouch@icomefromthenet.com>
   */    
-class GeneratorFactory implements ExtensionInterface
+class GeneratorFactory 
 {
     
     
     /**
       *  @var string[] list of Generators
       *
-      *  Each Generator must implement the PHPStats\GeneratorInterface
+      *  Each Generator must implement the ReverseRegex\RandomInterface
       */
     protected static $types = array(
-        'srand'     => '\PHPStats\Generator\SrandRandom',
-        'mersenne'  => '\PHPStats\Generator\MersenneRandom',
-        'simple'    => '\PHPStats\Generator\SimpleRandom',
+        'srand'     => '\\ReverseRegex\\Random\\SrandRandom',
+        'mersenne'  => '\\ReverseRegex\\Random\\MersenneRandom',
+        'simple'    => '\\ReverseRegex\\Random\\SimpleRandom',
     );
     
     public static function registerExtension($index,$namespace)
@@ -44,7 +43,7 @@ class GeneratorFactory implements ExtensionInterface
       *
       *  @param string the random generator type name
       *  @access public
-      *  @return PHPStats\GeneratorInterface
+      *  @return ReverseRegex\RandomInterface
       *  @throws PHPStats\Exception
       */
     public function create($type,$seed = null)
@@ -56,13 +55,13 @@ class GeneratorFactory implements ExtensionInterface
         if(isset(self::$types[$type]) === true) {
             # assign platform the full namespace
             if(class_exists(self::$types[$type]) === false) {
-                throw new PHPStatsException('Unknown Generator at::'.$type);    
+                throw new ReverseRegexException('Unknown Generator at::'.$type);    
             }
             
             $type = self::$types[$type];
             
         } else {
-            throw new PHPStatsException('Unknown Generator at::'.$type);
+            throw new ReverseRegexException('Unknown Generator at::'.$type);
         }
        
         return new $type($seed);

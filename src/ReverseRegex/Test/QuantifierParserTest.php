@@ -4,7 +4,7 @@ namespace ReverseRegex\Test;
 use ReverseRegex\Lexer;
 use ReverseRegex\Parser\Quantifier;
 use ReverseRegex\Generator\Scope;
-use PHPStats\Generator\MersenneRandom;
+use ReverseRegex\Random\MersenneRandom;
 
 class QuantifierParserTest extends Basic
 {

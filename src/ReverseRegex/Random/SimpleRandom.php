@@ -1,7 +1,7 @@
 <?php
-namespace PHPStats\Generator;
+namespace ReverseRegex\Random;
 
-use PHPStats\Exception as PHPStatsException;
+use ReverseRegex\Exception as ReverseRegexException;
 
 /**
   *  Simple Random
@@ -16,6 +16,16 @@ class SimpleRandom implements GeneratorInterface
       *  @var integer the seed value to use 
       */
     protected $seed = 0;
+    
+    /**
+      *  @var integer the max 
+      */
+    protected $max;
+    
+    /**
+      *  @var integer the min 
+      */
+    protected $min;
      
     /**
       *  Constructor
@@ -33,12 +43,35 @@ class SimpleRandom implements GeneratorInterface
         $this->seed($seed);
     }
      
-    /**
-      *  Return the maxium random value 
-      */ 
-    public function max()
+    public function max($value = null)
     {
-        return 2147483647;
+        if($value === null && $this->max === null) {
+            $max = 2147483647;
+        }
+        elseif($value === null) {
+            $max = $this->max;
+        }
+        else {
+            $max = $this->max = $value;
+        }
+        
+        return $max;
+    }
+    
+    
+    public function min($value = null)
+    {
+        if($value === null && $this->max === null) {
+            $min = 0;
+        }
+        elseif($value === null) {
+            $min = $this->min;
+        }
+        else {
+            $min = $this->min = $value;
+        }
+        
+        return $min;
     }
      
      
@@ -70,7 +103,7 @@ class SimpleRandom implements GeneratorInterface
         }
         
         if($max > 2796203) {
-            throw new PHPStatsException('Max param has exceeded the maxium 2796203');
+            throw new ReverseRegexException('Max param has exceeded the maxium 2796203');
         }
         
         if ($this->seed == 0) {
@@ -78,6 +111,7 @@ class SimpleRandom implements GeneratorInterface
         }
         
         $this->seed = ($this->seed * 125) % 2796203;  
+        
         
         return $this->seed % ($max - $min + 1) + $min;  
     }  

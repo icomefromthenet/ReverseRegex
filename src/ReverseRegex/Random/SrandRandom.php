@@ -1,7 +1,7 @@
 <?php
-namespace PHPStats\Generator;
+namespace ReverseRegex\Random;
 
-use PHPStats\Exception;
+use ReverseRegex\Exception as ReverseRegexException;
 
 /*
  * class SrandRandom
@@ -23,6 +23,17 @@ class SrandRandom implements GeneratorInterface
     protected $seed;
     
     
+     /**
+      *  @var integer the max 
+      */
+    protected $max;
+    
+    /**
+      *  @var integer the min 
+      */
+    protected $min;
+    
+    
     /*
      * __construct()
      *
@@ -32,7 +43,7 @@ class SrandRandom implements GeneratorInterface
      */
     public function __construct($seed = 0)
     {
-        $this->seed = $this->seed($seed);
+        $this->seed($seed);
     }
     
     /**
@@ -41,9 +52,35 @@ class SrandRandom implements GeneratorInterface
       *  @access public
       *  @return double
       */
-    public function max()
+    public function max($value = null)
     {
-        return getrandmax();
+        if($value === null && $this->max === null) {
+            $max = getrandmax();
+        }
+        elseif($value === null) {
+            $max = $this->max;
+        }
+        else {
+            $max = $this->max = $value;
+        }
+        
+        return $max;
+    }
+    
+    
+    public function min($value = null)
+    {
+        if($value === null && $this->max === null) {
+            $min = 0;
+        }
+        elseif($value === null) {
+            $min = $this->min;
+        }
+        else {
+            $min = $this->min = $value;
+        }
+        
+        return $min;
     }
     
     /**
@@ -54,7 +91,15 @@ class SrandRandom implements GeneratorInterface
       */
     public function generate($min = 0,$max = null)
     {
-        srand($this->seed);
+        if($max === null) {
+            $max = $this->max;
+        }
+        
+        if($min === null) {
+            $min = $this->min;
+        }
+        
+        
         return rand($min,$max);
     }
     
@@ -67,6 +112,9 @@ class SrandRandom implements GeneratorInterface
     public function seed($seed = null)
     {
         $this->seed = $seed;
+        srand($this->seed);
+        
+        return $this;
     }
     
 }

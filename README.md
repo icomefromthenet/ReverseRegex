@@ -15,7 +15,7 @@ Use Regular Expressions to generate text strings can be used in the following si
 ```php
 
 use ReverseRegex\Lexer;
-use PHPStats\Generator\SimpleRandom;
+use ReverseRegex\Random\SimpleRandom;
 use ReverseRegex\Parser;
 use ReverseRegex\Generator\Scope;
 

@@ -2,7 +2,7 @@
 use ReverseRegex\Lexer;
 use ReverseRegex\Parser;
 use ReverseRegex\Generator\Scope;
-use PHPStats\Generator\MersenneRandom;
+use ReverseRegex\Random\MersenneRandom;
 
 # require composer
 require '../vendor/autoload.php';

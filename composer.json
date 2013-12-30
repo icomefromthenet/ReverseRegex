@@ -12,6 +12,9 @@
             "homepage": "http://www.icomefromthenet.com"
         }
     ],
+    "require-dev": {
+       "phpunit/phpunit": "3.7.*"
+    },
     "require": {
         "doctrine/common"      : "2.3.*",
         "patchwork/utf8"       : "1.0.*"

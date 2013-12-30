@@ -41,7 +41,7 @@ class LiteralScopeTest extends Basic
         $literal->setMinOccurances(1);
         $literal->setMaxOccurances(1);
         
-        $generator_mock = $this->getMock('PHPStats\Generator\GeneratorInterface', array('generate','seed','max'));
+        $generator_mock = $this->getMock('ReverseRegex\Random\GeneratorInterface', array('generate','seed','max'));
         
         $generator_mock->expects($this->exactly(0))
                        ->method('generate');
@@ -61,7 +61,7 @@ class LiteralScopeTest extends Basic
         $literal->setMinOccurances(2);
         $literal->setMaxOccurances(2);
         
-        $generator_mock = $this->getMock('PHPStats\Generator\GeneratorInterface', array('generate','seed','max'));
+        $generator_mock = $this->getMock('ReverseRegex\Random\GeneratorInterface', array('generate','seed','max'));
         
         $generator_mock->expects($this->exactly(2))
                        ->method('generate')
@@ -83,7 +83,7 @@ class LiteralScopeTest extends Basic
         $literal->setMinOccurances(1);
         $literal->setMaxOccurances(2);
         
-        $gen = new \PHPStats\Generator\SrandRandom(0);
+        $gen = new \ReverseRegex\Random\SrandRandom(0);
                        
         $result = '';
         $literal->generate($result,$gen);
@@ -105,7 +105,7 @@ class LiteralScopeTest extends Basic
         $literal->setMinOccurances(1);
         $literal->setMaxOccurances(4);
         
-        $gen = new \PHPStats\Generator\SrandRandom(0);
+        $gen = new \ReverseRegex\Random\SrandRandom(0);
         
         $result = '';                       
         $literal->generate($result,$gen);               

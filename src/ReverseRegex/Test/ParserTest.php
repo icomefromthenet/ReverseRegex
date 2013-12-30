@@ -4,7 +4,7 @@ namespace ReverseRegex\Test;
 use ReverseRegex\Lexer;
 use ReverseRegex\Parser;
 use ReverseRegex\Generator\Scope;
-use PHPStats\Generator\MersenneRandom;
+use ReverseRegex\Random\MersenneRandom;
 
 class ParserTest extends Basic
 {
@@ -41,7 +41,7 @@ class ParserTest extends Basic
         $random = new MersenneRandom(100);
         $generator->generate($result,$random);
         
-        $this->assertEquals('(07)(02)(08)(02)',$result);
+        $this->assertEquals('(02)(04)(02)(08)',$result);
         
     }
     
@@ -57,7 +57,7 @@ class ParserTest extends Basic
         $random = new MersenneRandom(100);
         
         $generator->generate($result,$random);
-        $this->assertEquals('5098C',$result);
+        $this->assertEquals('5090J',$result);
         
     }
     
@@ -107,7 +107,7 @@ class ParserTest extends Basic
         $random = new MersenneRandom(100);
         $generator->generate($result,$random);
         
-        $this->assertEquals('(07)0906-8356',$result);
+        $this->assertEquals('(02)2595-1288',$result);
         
         
     }
@@ -153,27 +153,27 @@ class ParserTest extends Basic
         $random = new MersenneRandom(100);
         
         $generator->generate($result,$random);
-        $this->assertEquals('0209',$result);
+        $this->assertEquals('0225',$result);
         
         $result ='';
         $generator->generate($result,$random);
-        $this->assertEquals('0268',$result);
+        $this->assertEquals('2631',$result);
         
         $result ='';
         $generator->generate($result,$random);
-        $this->assertEquals('2636',$result);
+        $this->assertEquals('0288',$result);
         
         $result ='';
         $generator->generate($result,$random);
-        $this->assertEquals('0287',$result);
+        $this->assertEquals('0243',$result);
         
         $result ='';
         $generator->generate($result,$random);
-        $this->assertEquals('0255',$result);
+        $this->assertEquals('0284',$result);
         
         $result ='';
         $generator->generate($result,$random);
-        $this->assertEquals('2615',$result);
+        $this->assertEquals('0210',$result);
     }
     
     
