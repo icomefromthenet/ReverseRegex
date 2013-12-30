@@ -1,14 +1,12 @@
 <?php
-namespace ReverseRegex\Random;
-
-use PHPStats\Generator\GeneratorInterface as CommonInterface;
+namespace PHPStats\Generator;
 
 /**
   *  Interface that all generators should implement
   *
   *  @access Lewis Dyer <getintouch@icomefromthenet.com>
   */
-interface GeneratorInterface extends CommonInterface
+interface GeneratorInterface
 {
     
     /**

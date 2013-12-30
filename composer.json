@@ -22,7 +22,7 @@
     "autoload": {
         "psr-0": {
             "ReverseRegex": "src/",
-            "PHPStats"    : "lib/phpstats/lib"
+            "PHPStats"    : "src/"
         }
     }
 }
