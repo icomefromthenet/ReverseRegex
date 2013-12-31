@@ -1,7 +1,7 @@
 <?php
 namespace ReverseRegex\Generator;
 
-use ReverseRegex\Random\GeneratorInterface;
+use PHPStats\Generator\GeneratorInterface;
 use ReverseRegex\Exception as GeneratorException;
 
 /**

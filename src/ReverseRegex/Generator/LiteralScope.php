@@ -2,7 +2,7 @@
 namespace ReverseRegex\Generator;
 
 use ReverseRegex\Generator\Scope;
-use ReverseRegex\Random\GeneratorInterface;
+use PHPStats\Generator\GeneratorInterface;
 use ReverseRegex\ArrayCollection;
 use ReverseRegex\Exception as GeneratorException;
 

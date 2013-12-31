@@ -2,7 +2,7 @@
 namespace ReverseRegex\Generator;
 
 
-use ReverseRegex\Random\GeneratorInterface;
+use PHPStats\Generator\GeneratorInterface;
 
 /**
   *  Conext interface for Generator
