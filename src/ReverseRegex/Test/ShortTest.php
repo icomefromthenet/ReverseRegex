@@ -65,7 +65,7 @@ class ShortTest extends Basic
         $result = $head->getLiterals();
         
         foreach($result as $value) {
-            $this->assertRegExp('/\s/',$value);
+            $this->assertTrue(!empty($value));
         }
     }
     
@@ -84,7 +84,7 @@ class ShortTest extends Basic
         $result = $head->getLiterals();
         
         foreach($result as $value) {
-            $this->assertRegExp('/\S/',$value);
+            $this->assertTrue(!empty($value));
         }
     }
     
