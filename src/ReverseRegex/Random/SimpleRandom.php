@@ -46,7 +46,7 @@ class SimpleRandom implements GeneratorInterface
     public function max($value = null)
     {
         if($value === null && $this->max === null) {
-            $max = 2147483647;
+            $max = PHP_INT_MAX;
         }
         elseif($value === null) {
             $max = $this->max;
@@ -94,15 +94,15 @@ class SimpleRandom implements GeneratorInterface
       *  Generate a random numer
       *
       *  @param integer $max
-      *  @param integer $max 2,796,203 largest possible max
+      *  @param integer $max will use PHP_INT_MAX for largest possible max
       */
     public function generate($min = 0, $max = null)
     {  
         if($max === null) {
-            $max = 2796203;
+            $max = PHP_INT_MAX;
         }
         
-        if($max > 2796203) {
+        if($max > PHP_INT_MAX) {
             throw new ReverseRegexException('Max param has exceeded the maxium 2796203');
         }
         
@@ -110,7 +110,7 @@ class SimpleRandom implements GeneratorInterface
             $this->seed(mt_rand());
         }
         
-        $this->seed = ($this->seed * 125) % 2796203;  
+        $this->seed = ($this->seed * 125) % PHP_INT_MAX;  
         
         
         return $this->seed % ($max - $min + 1) + $min;  
