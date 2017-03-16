@@ -103,7 +103,7 @@ class SimpleRandom implements GeneratorInterface
         }
         
         if($max > PHP_INT_MAX) {
-            throw new ReverseRegexException('Max param has exceeded the maxium 2796203');
+            throw new ReverseRegexException('Max param has exceeded the maximum ' . PHP_INT_MAX);
         }
         
         if ($this->seed == 0) {
