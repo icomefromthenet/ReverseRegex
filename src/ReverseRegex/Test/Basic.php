@@ -1,10 +1,11 @@
 <?php
 namespace ReverseRegex\Test;
 
+use PHPUnit\Framework\TestCase;
 use ReverseRegex\PimpleBootstrap;
 use Pimple\Pimple;
 
-abstract class Basic extends \PHPUnit_Framework_TestCase
+abstract class Basic extends TestCase
 {
     public function createApplication()
     {

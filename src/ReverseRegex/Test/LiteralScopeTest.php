@@ -41,7 +41,7 @@ class LiteralScopeTest extends Basic
         $literal->setMinOccurances(1);
         $literal->setMaxOccurances(1);
         
-        $generator_mock = $this->getMock('ReverseRegex\Random\GeneratorInterface', array('generate','seed','max'));
+        $generator_mock = $this->createMock('ReverseRegex\Random\GeneratorInterface', array('generate','seed','max'));
         
         $generator_mock->expects($this->exactly(0))
                        ->method('generate');
@@ -61,7 +61,7 @@ class LiteralScopeTest extends Basic
         $literal->setMinOccurances(2);
         $literal->setMaxOccurances(2);
         
-        $generator_mock = $this->getMock('ReverseRegex\Random\GeneratorInterface', array('generate','seed','max'));
+        $generator_mock = $this->createMock('ReverseRegex\Random\GeneratorInterface', array('generate','seed','max'));
         
         $generator_mock->expects($this->exactly(2))
                        ->method('generate')

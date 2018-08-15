@@ -140,15 +140,15 @@ class ShortTest extends Basic
         $head   = new LiteralScope('lit1',$scope);
         
         $lexer->moveNext();
-        $lexer->moveNext();
-        
+
         $parser->parse($head,$scope,$lexer);
         
         $result = $head->getLiterals();
         
-        foreach($result as $value) {
-            $this->assertRegExp('/./',$value);
-        }
+        
+        // match 0..127 char in ASSCI Chart
+        $this->assertCount(128,$result);
+        
         
     }
     

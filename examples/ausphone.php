@@ -8,7 +8,7 @@ use ReverseRegex\Random\MersenneRandom;
 require '../vendor/autoload.php';
 
 # parse the regex
-$lexer     = new Lexer('\(0[23478]\)9[0-9]{3}-[0-9]{4}');
+$lexer     = new Lexer('\(0[23478]\) 9[0-9]{3}-[0-9]{4}');
 $parser    = new Parser($lexer,new Scope(),new Scope());
 $generator = $parser->parse()->getResult();
 
