@@ -37,7 +37,8 @@ class SimpleRandom implements GeneratorInterface
     public function __construct($seed = null)
     {
         if ($seed === null || $seed === 0) {
-            $this->seed(mt_rand());
+            ## 6 - Propagate the call to mt_rand() by assigning it to $seed
+            $seed = mt_rand();
         }
         
         $this->seed($seed);
