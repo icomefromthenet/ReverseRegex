@@ -1,7 +1,7 @@
 <?php
 namespace ReverseRegex;
 
-use \Doctrine\Common\Lexer as BaseLexer;
+use Doctrine\Common\Lexer as BaseLexer;
 use ReverseRegex\Exception as LexerException;
 
 /**
