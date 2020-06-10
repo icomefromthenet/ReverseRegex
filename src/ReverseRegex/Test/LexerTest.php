@@ -1,6 +1,7 @@
 <?php
 namespace ReverseRegex\Test;
 
+use ReverseRegex\Exception as RegexException;
 use ReverseRegex\Lexer;
 
 class LexerTest extends Basic
@@ -691,74 +692,53 @@ class LexerTest extends Basic
         
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Opening group char "(" has no matching closing character
-      */    
+    
     public function testGroupNestingErrorStillOpen()
     {
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage('Opening group char "(" has no matching closing character');
+
         $lexer = new Lexer('(()');
         
-        $lexer->moveNext();
-        $this->assertEquals('(',$lexer->lookahead['value']);
-        $this->assertEquals(Lexer::T_GROUP_OPEN,$lexer->lookahead['type']);
-        
-        $lexer->moveNext();
-        $this->assertEquals('(',$lexer->lookahead['value']);
-        $this->assertEquals(Lexer::T_GROUP_OPEN,$lexer->lookahead['type']);
-        
-        $lexer->moveNext();
-        $this->assertEquals(')',$lexer->lookahead['value']);
-        $this->assertEquals(Lexer::T_GROUP_CLOSE,$lexer->lookahead['type']);
-        
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Closing group char "(" has no matching opening character
-      */    
+   
     public function testGroupNestingErrorClosedNotOpened()
     {
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage('Closing group char "(" has no matching opening character');
+
+        
         $lexer = new Lexer('())');
-        
-        $lexer->moveNext();
-        $this->assertEquals('(',$lexer->lookahead['value']);
-        $this->assertEquals(Lexer::T_GROUP_OPEN,$lexer->lookahead['type']);
-        
-        $lexer->moveNext();
-        $this->assertEquals(')',$lexer->lookahead['value']);
-        $this->assertEquals(Lexer::T_GROUP_CLOSE,$lexer->lookahead['type']);
-        
-        $lexer->moveNext();
-        $this->assertEquals(')',$lexer->lookahead['value']);
-        $this->assertEquals(Lexer::T_GROUP_CLOSE,$lexer->lookahead['type']);
         
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Can't have a second character class while first remains open
-      */    
+     
     public function testCharSetNestingError()
     {
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage("Can't have a second character class while first remains open");
+
         $lexer = new Lexer('[[]]');
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Can't close a character class while none is open
-      */    
+   
     public function testCharSetOpenError()
     {
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage("Can't close a character class while none is open");
+
+        
         $lexer = new Lexer(']');
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Character Class that been closed
-      */    
+    
     public function testCharSetOpenNotClosed()
     {
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage("Character Class that been closed");
+
+        
         $lexer = new Lexer('[');
     }
     

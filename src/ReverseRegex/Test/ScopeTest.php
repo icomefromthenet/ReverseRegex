@@ -1,6 +1,7 @@
 <?php
 namespace ReverseRegex\Test;
 
+use ReverseRegex\Exception as RegexException;
 use ReverseRegex\Generator\Scope;
 use ReverseRegex\Random\MersenneRandom;
 use ReverseRegex\Generator\LiteralScope;
@@ -78,10 +79,7 @@ class ScopeTest extends Basic
         
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage No child scopes to call must be atleast 1
-      */
+ 
     public function testGenerateErrorNotChildren()
     {
         $gen = new MersenneRandom(700);
@@ -91,6 +89,10 @@ class ScopeTest extends Basic
         $scope->setMaxOccurances(6);
         
         $result = '';
+
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage("No child scopes to call must be atleast 1");
+
         
         $scope->generate($result,$gen);
         

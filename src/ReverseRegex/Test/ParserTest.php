@@ -1,6 +1,7 @@
 <?php
 namespace ReverseRegex\Test;
 
+use ReverseRegex\Exception as RegexException;
 use ReverseRegex\Lexer;
 use ReverseRegex\Parser;
 use ReverseRegex\Generator\Scope;
@@ -230,12 +231,13 @@ class ParserTest extends Basic
         
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Error found STARTING at position 3 after `\(0[` with msg Negated Character Set ranges not supported at this time
-      */
+   
     public function testParserLexerError()
     {
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage("Error found STARTING at position 3 after `\(0[` with msg Negated Character Set ranges not supported at this time");
+
+        
         $lexer = new Lexer('\(0[^23478]\)[0-9]{4}-[0-9]{4}');
         
         $container = new Scope();
@@ -243,30 +245,23 @@ class ParserTest extends Basic
         $parser = new Parser($lexer,$container,$head);
         $generator = $parser->parse()->getResult();
         
-        $result ='';
-        $random = new MersenneRandom(100);
-        $generator->generate($result,$random);
-        
-        
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Error found STARTING at position 16 after `\(0[23478]\)[9-4]` with msg Character class range 9 - 4 is out of order
-      */
+    
     public function testParserLexerErrorB()
     {
+        
         $lexer = new Lexer('\(0[23478]\)[9-4]{4}-[0-9]{4}');
         
         $container = new Scope();
         $head = new Scope();
         $parser = new Parser($lexer,$container,$head);
+        
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage("Error found STARTING at position 16 after `\(0[23478]\)[9-4]` with msg Character class range 9 - 4 is out of order");
+        
+        
         $generator = $parser->parse()->getResult();
-        
-        $result ='';
-        $random = new MersenneRandom(100);
-        $generator->generate($result,$random);
-        
         
     }
     

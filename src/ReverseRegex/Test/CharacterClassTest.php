@@ -1,6 +1,7 @@
 <?php
 namespace ReverseRegex\Test;
 
+use ReverseRegex\Exception as RegexException;
 use ReverseRegex\Lexer;
 use ReverseRegex\Parser;
 use ReverseRegex\Generator\Scope;
@@ -83,16 +84,16 @@ class CharacterClassTest extends Basic
         
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Character class range z - a is out of order
-      */
+  
     public function testFillRangeOutofOrder()
     {
         $start = 'z';
         $end   = 'a';
         $scope = new LiteralScope();
         $parser = new CharacterClass();
+
+        $this->expectException(RegexException::class);
+        $this->expectExceptionMessage('Character class range z - a is out of order');
         
         $parser->fillRange($scope,$start,$end);
         
@@ -203,10 +204,7 @@ class CharacterClassTest extends Basic
        
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Braces not supported here 
-      */
+   
     public function testParseHexShortBraceError()
     {
         $lexer = new Lexer('[\x{61}-\x6B-\x6E]');
@@ -214,7 +212,9 @@ class CharacterClassTest extends Basic
         $head  = new LiteralScope();
         $parser = new CharacterClass();
         
-        
+        $this->expectException(RegexException::class);
+        $this->expectExceptionMessage('Braces not supported here');
+      
         $lexer->moveNext();
         $parser->parse($head,$scope,$lexer);
        

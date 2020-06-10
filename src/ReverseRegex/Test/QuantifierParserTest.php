@@ -1,6 +1,7 @@
 <?php
 namespace ReverseRegex\Test;
 
+use ReverseRegex\Exception as RegexException;
 use ReverseRegex\Lexer;
 use ReverseRegex\Parser\Quantifier;
 use ReverseRegex\Generator\Scope;
@@ -59,11 +60,7 @@ class QuantifierParserTest extends Basic
         $this->assertEquals(5,$scope->getMaxOccurances());
         
     }
-    
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Quantifier expects and integer compitable string
-      */
+   
     public function testFailerAlphaCaracters()
     {
         $pattern = '{ 1 , 5a }';
@@ -72,14 +69,16 @@ class QuantifierParserTest extends Basic
         $qual    = new Quantifier();
         
         $lexer->moveNext();
+
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage("Quantifier expects and integer compitable string");
+
+        
         $qual->parse($scope,$scope,$lexer);
         
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Quantifier expects and integer compitable string
-      */
+   
     public function testFailerMissingMaximumCaracters()
     {
         $pattern = '{ 1 ,}';
@@ -88,14 +87,16 @@ class QuantifierParserTest extends Basic
         $qual    = new Quantifier();
         
         $lexer->moveNext();
+
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage("Quantifier expects and integer compitable string");
+
+        
         $qual->parse($scope,$scope,$lexer);
         
     }
     
-     /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Quantifier expects and integer compitable string
-      */
+
     public function testFailerMissingMinimumCaracters()
     {
         $pattern = '{,1}';
@@ -104,14 +105,16 @@ class QuantifierParserTest extends Basic
         $qual    = new Quantifier();
         
         $lexer->moveNext();
+
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage("Quantifier expects and integer compitable string");
+
+
         $qual->parse($scope,$scope,$lexer);
         
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Closing quantifier token `}` not found
-      */
+   
     public function testMissingClosureCharacter()
     {
         $pattern = '{1,1';
@@ -120,15 +123,18 @@ class QuantifierParserTest extends Basic
         $qual    = new Quantifier();
         
         $lexer->moveNext();
+
+
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage("Closing quantifier token `}` not found");
+
+
         $qual->parse($scope,$scope,$lexer);
         
     }
     
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Nesting Quantifiers is not allowed
-      */
+   
     public function testNestingQuantifiers()
     {
         $pattern = '{1,1{1,1}';
@@ -137,6 +143,11 @@ class QuantifierParserTest extends Basic
         $qual    = new Quantifier();
         
         $lexer->moveNext();
+
+        $this->expectException(RegexException::class);        
+        $this->expectExceptionMessage("Nesting Quantifiers is not allowed");
+
+
         $qual->parse($scope,$scope,$lexer);
         
     }

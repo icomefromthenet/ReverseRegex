@@ -1,6 +1,7 @@
 <?php
 namespace ReverseRegex\Test;
 
+use ReverseRegex\Exception as RegexException;
 use ReverseRegex\Lexer;
 use ReverseRegex\Parser;
 use ReverseRegex\Generator\Scope;
@@ -10,10 +11,7 @@ use ReverseRegex\Parser\Unicode;
 class UnicodeTest extends Basic
 {
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Property \p (Unicode Property) not supported use \x to specify unicode character or range
-      */
+   
     public function testUnsupportedShortProperty()
     {
         
@@ -23,15 +21,15 @@ class UnicodeTest extends Basic
         
         $lexer->moveNext();
         $lexer->moveNext();
+
+        $this->expectException(RegexException::class);
+        $this->expectExceptionMessage('Property \p (Unicode Property) not supported use \x to specify unicode character or range');
         
         $parser->parse($scope,$scope,$lexer); 
         
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Expecting character { after \X none found
-      */
+    
     public function testErrorNoOpeningBrace()
     {
         
@@ -41,15 +39,15 @@ class UnicodeTest extends Basic
         
         $lexer->moveNext();
         $lexer->moveNext();
+
+        $this->expectException(RegexException::class);
+        $this->expectExceptionMessage('Expecting character { after \X none found');
         
         $parser->parse($scope,$scope,$lexer); 
         
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Nesting hex value ranges is not allowed
-      */
+   
     public function testErrorNested()
     {
         $lexer = new Lexer('\X{aa{aa}');
@@ -58,16 +56,16 @@ class UnicodeTest extends Basic
         
         $lexer->moveNext();
         $lexer->moveNext();
+
+        $this->expectException(RegexException::class);
+        $this->expectExceptionMessage('Nesting hex value ranges is not allowed');
         
         $parser->parse($scope,$scope,$lexer); 
         
     }
     
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Closing quantifier token `}` not found
-      */
+   
     public function testErrorUnclosed()
     {
         $lexer = new Lexer('\X{aaaa');
@@ -76,16 +74,16 @@ class UnicodeTest extends Basic
         
         $lexer->moveNext();
         $lexer->moveNext();
+
+        $this->expectException(RegexException::class);
+        $this->expectExceptionMessage('Closing quantifier token `}` not found');
         
         $parser->parse($scope,$scope,$lexer); 
         
         
     }
     
-    /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage No hex number found inside the range
-      */
+   
     public function testErrorEmptyToken()
     {
         $lexer = new Lexer('\X{}');
@@ -94,6 +92,9 @@ class UnicodeTest extends Basic
         
         $lexer->moveNext();
         $lexer->moveNext();
+
+        $this->expectException(RegexException::class);
+        $this->expectExceptionMessage('No hex number found inside the range');
         
         $parser->parse($scope,$scope,$lexer); 
         
@@ -118,10 +119,7 @@ class UnicodeTest extends Basic
         
     }
     
-     /**
-      *  @expectedException \ReverseRegex\Exception
-      *  @expectedExceptionMessage Braces not supported here
-      */
+  
     public function testShortErrorWhenBraces()
     {
         $lexer = new Lexer('\x{64');
@@ -131,13 +129,11 @@ class UnicodeTest extends Basic
         
         $lexer->moveNext();
         $lexer->moveNext();
-        
+       
+        $this->expectException(RegexException::class);    
+        $this->expectExceptionMessage('Braces not supported here');
+       
         $parser->parse($head,$scope,$lexer);
-        
-        $result = $head->getLiterals();
-        
-        $this->assertEquals('d',$result[0]);
-        
         
     }
     
