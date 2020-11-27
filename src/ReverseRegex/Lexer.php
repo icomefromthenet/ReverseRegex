@@ -1,7 +1,7 @@
 <?php
 namespace ReverseRegex;
 
-use Doctrine\Common\Lexer as BaseLexer;
+use Doctrine\Common\Lexer\AbstractLexer;
 use ReverseRegex\Exception as LexerException;
 
 /**
@@ -10,7 +10,7 @@ use ReverseRegex\Exception as LexerException;
   *  @author Lewis Dyer <getintouch@icomefromthenet.com>
   *  @since 0.0.1
   */
-class Lexer extends BaseLexer
+class Lexer extends AbstractLexer
 {
 
     //  ----------------------------------------------------------------------------
