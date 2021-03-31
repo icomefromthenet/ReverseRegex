@@ -10,7 +10,7 @@ use ReverseRegex\Exception as LexerException;
   *  @author Lewis Dyer <getintouch@icomefromthenet.com>
   *  @since 0.0.1
   */
-class Lexer extends BaseLexer
+class Lexer extends BaseLexer\AbstractLexer
 {
 
     //  ----------------------------------------------------------------------------
