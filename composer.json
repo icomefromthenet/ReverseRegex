@@ -1,11 +1,26 @@
 {
-    "name": "icomefromthenet/reverse-regex",
+    "name": "pointybeard/reverse-regex",
     "description": "Convert Regular Expressions into text, for testing",
-    "keywords": ["regex","testing","test data","generator"],
-    "homepage": "http://github.com/icomefromthenet/ReverseRegex",
+    "keywords": [
+        "regex",
+        "testing",
+        "test data",
+        "generator"
+    ],
+    "homepage": "http://github.com/pointybeard-forks/ReverseRegex",
     "type": "library",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/pointybeard-forks/ReverseRegex/issues",
+        "wiki": "https://github.com/pointybeard-forks/ReverseRegex/wiki"
+    },
+    "minimum-stability": "stable",
     "authors": [
+        {
+            "name": "Alannah Kearney",
+            "email": "hi@alannahkearney.com",
+            "homepage": "https://github.com/pointybeard"
+        },
         {
             "name": "Lewis Dyer",
             "email": "getintouch@icomefromthenet.com",
@@ -19,12 +34,12 @@
         "symfony/polyfill-mbstring": "^1.23"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
     },
     "autoload": {
         "psr-4": {
             "ReverseRegex\\": "src/ReverseRegex",
-            "PHPStats\\"    : "src/PHPStats"
+            "PHPStats\\": "src/PHPStats"
         }
     }
 }
