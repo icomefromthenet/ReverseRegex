@@ -75,7 +75,7 @@ class ParserTest extends Basic
         $random = new MersenneRandom(100);
         
         $generator->generate($result,$random);
-        $this->assertRegExp('/\d\d\d/',$result);
+        $this->assertMatchesRegularExpression('/\d\d\d/',$result);
         
     }
     
@@ -91,7 +91,7 @@ class ParserTest extends Basic
         $random = new MersenneRandom(10034343);
         
         $generator->generate($result,$random);
-        $this->assertRegExp('/\d\d\d([a-zA-Z])\w./',$result);
+        $this->assertMatchesRegularExpression('/\d\d\d([a-zA-Z])\w./',$result);
         
     }
     
@@ -139,7 +139,7 @@ class ParserTest extends Basic
         for($i = 100; $i > 0; $i--) {
             $result ='';
             $generator->generate($result,$random);
-            $this->assertRegExp('/^(0[289][0-9]{2})|([1345689][0-9]{3})|(2[0-8][0-9]{2})|(290[0-9])|(291[0-4])|(7[0-4][0-9]{2})|(7[8-9][0-9]{2})$/',$result);
+            $this->assertMatchesRegularExpression('/^(0[289][0-9]{2})|([1345689][0-9]{3})|(2[0-8][0-9]{2})|(290[0-9])|(291[0-4])|(7[0-4][0-9]{2})|(7[8-9][0-9]{2})$/',$result);
         }
         
         # Generate Postcode for ACT only        
@@ -192,7 +192,7 @@ class ParserTest extends Basic
         for($i = 10; $i > 0; $i--) {
             $result ='';
             $generator->generate($result,$random);
-            $this->assertRegExp('/^Hello|World|Is|Good$/',$result);
+            $this->assertMatchesRegularExpression('/^Hello|World|Is|Good$/',$result);
         }
         
     }
@@ -212,7 +212,7 @@ class ParserTest extends Basic
         for($i = 10; $i > 0; $i--) {
             $result ='';
             $generator->generate($result,$random);
-            $this->assertRegExp('/(Hello){5,9}/',$result);
+            $this->assertMatchesRegularExpression('/(Hello){5,9}/',$result);
         }
         
         $lexer = new Lexer("(Hello)?");
@@ -226,7 +226,7 @@ class ParserTest extends Basic
         
         $result ='';
         $generator->generate($result,$random);
-        $this->assertRegExp('/(Hello)?/',$result);
+        $this->assertMatchesRegularExpression('/(Hello)?/',$result);
         
         
     }
