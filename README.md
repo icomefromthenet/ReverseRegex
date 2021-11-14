@@ -1,72 +1,54 @@
-ReverseRegex
-============
+# ReverseRegex
 
-[![Build Status](https://travis-ci.org/icomefromthenet/ReverseRegex.png)](https://travis-ci.org/icomefromthenet/ReverseRegex)
+[![Build Status](https://api.travis-ci.com/pointybeard-forks/ReverseRegex.svg)](https://app.travis-ci.com/github/pointybeard-forks/ReverseRegex)
 
-Use Regular Expressions to generate text strings can be used in the following situations:
+Use Regular Expressions to generate strings.
 
-1. Wrting test data for web forms.
-2. Writing test data for databases.
-3. Generating test data for regular expressions. 
+-   [Installation](#installation)
+-   [Usage](#usage)
+-   [About](#about)
+    -   [Requirements](#dependencies)
+-   [Support](#support)
+-   [Contributing](#contributing)
+-   [License](#license)
 
+## Installation
 
-##Example
+This library is installed via [Composer](http://getcomposer.org/). To install, use `composer require pointybeard/reverse-regex` in your application.
+
+## Usage
 
 ```php
+<?php
+
+declare(strict_types=1);
 
 use ReverseRegex\Lexer;
 use ReverseRegex\Random\SimpleRandom;
 use ReverseRegex\Parser;
 use ReverseRegex\Generator\Scope;
 
-# load composer
 require "vendor/autoload.php";
 
-$lexer = new  Lexer('[a-z]{10}');
-$gen   = new SimpleRandom(10007);
+$pattern = "[a-z0-9]{10}"; // 10 random letters and numbers
+
+$lexer = new Lexer($pattern);
+$random = new SimpleRandom();
+$parser = new Parser($lexer, new Scope(), new Scope());
+$generator = $parser->parse()->getResult();
+
 $result = '';
 
 $parser = new Parser($lexer,new Scope(),new Scope());
-$parser->parse()->getResult()->generate($result,$gen);
 
-echo $result;
-
-```
-
-***Produces***
+var_dump($generator->generate($result, $random));
+// string(10) "j2ydisgoks"
 
 ```
-jmceohykoa
-aclohnotga
-jqegzuklcv
-ixdbpbgpkl
-kcyrxqqfyw
-jcxsjrtrqb
-kvaczmawlz
-itwrowxfxh
-auinmymonl
-dujyzuhoag
-vaygybwkfm
-```
-#### Other examples
 
-1. [Australian phone numbers](https://github.com/icomefromthenet/ReverseRegex/blob/master/examples/ausphone.php)
-2. [Australian postcodes](https://github.com/icomefromthenet/ReverseRegex/blob/master/examples/auspostcode.php)
-3. [Mobile numbers](https://github.com/icomefromthenet/ReverseRegex/blob/master/examples/mobilenumbers.php)
+See <https://github.com/pointybeard-forks/ReverseRegex/tree/master/examples> for more examples.
 
-
-##Installing
-
-To install use composer
-
-```json
-{
-  "require" : {
-	"icomefromthenet/reverse-regex" : "dev-master"
-    }
-}
-```
-## Writing a Regex
+### Notes When Writing Regular Expressions
 
 1. Escape all meta-characters i.e. if you need to escape the character in a regex you will need to escape here.
 2. Not all meta-characters are suppported see list below.
@@ -75,71 +57,46 @@ To install use composer
 5. Quantifiers are applied to left most group, literal or character class.
 6. Beware of the `+` and `*` quantifers they apply a possible maxium number of occurances up to `PHP_INT_MAX`.
 
-### Regex Support
+### Supported Syntax
 
-<table>
- <tr>
-  <th>
-    Example
-  </th>
-  <th>
-    Description
-  </th>
-  <th>
-    Resulting String
-  </th>
- </tr>
- 
- <tr>
-  <td> (abcf) </td> <td> Support literals this would generate string </td> <td>`abcf`</td>  
- </tr>
- <tr>
-   <td> \((abcf)\) </td> <td> Escape meta characters as you normally would in a regex </td> <td>`(abcf)`</td>  
- </tr>
- <tr>
-  <td> [a-z] </td> <td> Character Classes are supported </td> <td>`a`</td>  
- </tr>
- <tr>
-  <td> a{5} </td> <td> Quantifiers supported always <strong>last</strong> group or literal or character class </td> <td>`aaaaa`</td>  
- </tr>
- <tr>
-  <td> a{1,5} </td> <td> Range Quantifiers supported</td> <td>`aa`</td>  
- </tr>
- <tr>
-  <td> a|b|c </td> <td> Alternation supported pick one of three at random </td> <td>`b`</td>  
- </tr>
- <tr>
-  <td> a|(y|d){5} </td> <td> Groups supported with alternation and quantifiers </td> <td>`ddddd` or `a` or `yyyyy` </td>  
- </tr>
- <tr>
-  <tr>
-    <td> \d </td> <td> Digit shorthand equ [0-9]  </td> <td>`1`</td>  
-  </tr>
-  <tr>
-    <td> \w </td><td> word character shorthand equ [a-zA-Z0-9_]  </td> <td>`j`</td>  
-  </tr>
-  <tr>
-    <td> \W </td><td>Non word character shorthand equ [^a-zA-Z0-9_]  </td> <td>`j`</td>  
-  </tr>
-  <tr>
-    <td> \s </td><td>White space shorthand ASCII only </td> <td>` `</td>  
-  </tr>
-  <tr>
-    <td> \S </td><td>Non White space shorthand ASCII only </td> <td>`i`</td>  
-  </tr>
-  <tr>
-    <td> . </td><td>Dot all ASCII characters </td> <td>`$`</td>  
-  </tr>
-  <tr>
-    <td> * + ? </td><td>Short hand quantifiers, recommend not use them </td> <td> </td>  
-  </tr>
-  <tr>
-    <td> \X{00FF}[\X{00FF}-\X{00FF}] </td><td>Unicode ranges</td> <td> </td>  
-  </tr>
-  <tr>
-    <td> \xFF[\xFF-\xFF] </td><td> Hex ranges</td> <td> </td>  
-  </tr>
- </table>
+| Example  | Description | Resulting String |
+| ------------- | ------------- | ------------- |
+| `(abcf)` | Support literals this would generate string | 'abcf' |
+| `\((abcf)\)` | Escape meta characters as you normally would in a regex | '(abcf)' |
+| `[a-z]` | Character Classes are supported | 'a' |
+| `a{5}` | Quantifiers supported always last group or literal or character class | 'aaaaa' |
+| `a{1,5}` | Range Quantifiers supported | 'aa' |
+| `a\|b\|c` | Alternation supported pick one of three at random | 'b' |
+| `a\|(y\|d){5}` | Groups supported with alternation and quantifiers | 'ddddd', 'a', or 'yyyyy' |
+| `\d` | Digit shorthand equ [0-9] | '1' |
+| `\w` | word character shorthand equ [a-zA-Z0-9_] | 'j' |
+| `\W` | Non word character shorthand equ [^a-zA-Z0-9_] | 'j' |
+| `\s` | White space shorthand ASCII only | ' ' |
+| `\S` | Non White space shorthand ASCII only | 'i' |
+| `.` | Dot all ASCII characters | '\$' |
+| `* + ?` | Short hand quantifiers, recommend not use them |  |
+| `\X{00FF}[\X{00FF}-\X{00FF}]` | Unicode ranges |  |
+| `\xFF[\xFF-\xFF]` | Hex ranges |  |
 
+## About
 
+### Requirements
 
+- This library works with PHP 7.2 or above.
+
+## Support
+
+If you believe you have found a bug, please report it using the [GitHub issue tracker][ext-issues].
+
+## Author
+
+- Lewis Dyer (<http://www.icomefromthenet.com>, <https://github.com/icomefromthenet/ReverseRegex>) - Original author
+- Alannah Kearney (<https://github.com/pointybeard>) - Fixed a few things after library was abandoned
+- See also the list of [contributors][ext-contributor] who participated in this project
+
+## License
+"ReverseRegex" is released under the MIT License. See [LICENCE][doc-LICENCE] for details.
+
+[doc-LICENCE]: http://www.opensource.org/licenses/MIT
+[ext-issues]: https://github.com/pointybeard/ReverseRegex/issues
+[ext-contributor]: https://github.com/pointybeard/ReverseRegex/contributors
