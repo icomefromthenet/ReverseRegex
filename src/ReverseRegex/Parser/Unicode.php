@@ -4,7 +4,6 @@ namespace ReverseRegex\Parser;
 use ReverseRegex\Generator\Scope;
 use ReverseRegex\Lexer;
 use ReverseRegex\Exception as ParserException;
-use Patchwork\Utf8;
 
 /**
   *  Parse a unicode sequence e.g  \x54 \X{4444}
@@ -74,7 +73,7 @@ class Unicode implements StrategyInterface
                 
                 $number    = trim(implode('',$tokens));
                 
-                return Utf8::chr(hexdec($number));
+                return mb_chr(hexdec($number));
                 
             break;
             case ($lexer->isNextToken(Lexer::T_SHORT_X)) :
@@ -92,7 +91,7 @@ class Unicode implements StrategyInterface
                 }
                 
                 $value     = trim(implode('',$tokens));
-                return Utf8::chr(hexdec($value));
+                return mb_chr(hexdec($value));
             break;
             default :
                 throw new ParserException('No Unicode expression to evaluate');
