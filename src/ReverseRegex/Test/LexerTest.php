@@ -9,7 +9,7 @@ class LexerTest extends Basic
     public function testInheritsDoctrineLexer()
     {
         $lexer = new Lexer('[a-z]');
-        $this->assertInstanceOf('\Doctrine\Common\Lexer',$lexer);
+        $this->assertInstanceOf('\Doctrine\Common\Lexer\AbstractLexer',$lexer);
         
     }
     
