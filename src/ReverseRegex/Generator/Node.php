@@ -1,41 +1,44 @@
 <?php
+
+declare(strict_types=1);
+
 namespace ReverseRegex\Generator;
 
-use \ArrayObject;
-use \SplObjectStorage;
-use \ArrayAccess;
-use \Countable;
-use \Iterator;
+use ArrayAccess;
+use ArrayObject;
+use Countable;
+use Iterator;
+use SplObjectStorage;
 
 /**
-  *  Base to all Generator Scopes 
-  *
-  *  @author Lewis Dyer <getintouch@icomefromthenet.com>
-  *  @since 0.0.1
-  */
+ *  Base to all Generator Scopes.
+ *
+ *  @author Lewis Dyer <getintouch@icomefromthenet.com>
+ *
+ *  @since 0.0.1
+ */
 class Node implements ArrayAccess, Countable, Iterator
 {
     /**
-      *  @var string name of the node 
-      */
+     *  @var string name of the node
+     */
     protected $label;
-    
+
     /**
-      *  @var ArrayObject container for node metadata 
-      */
+     *  @var ArrayObject container for node metadata
+     */
     protected $attrs;
-    
+
     /**
-      *  @var SplObjectStorage container for node relationships 
-      */
+     *  @var SplObjectStorage container for node relationships
+     */
     protected $links;
 
     /**
-      *  Class Constructor
-      *
-      *  @access public
-      *  @param string $label
-      */
+     *  Class Constructor.
+     *
+     *  @param string $label
+     */
     public function __construct($label = 'node')
     {
         $this->attrs = new ArrayObject();
@@ -45,39 +48,36 @@ class Node implements ArrayAccess, Countable, Iterator
     }
 
     /**
-      *  Fetch the nodes label
-      *
-      *  @access public
-      *  @return string the nodes label
-      */
+     *  Fetch the nodes label.
+     *
+     *  @return string the nodes label
+     */
     public function getLabel()
     {
         return $this->label;
     }
 
     /**
-      *  Sets the node label
-      *
-      *  @access public
-      *  @param string $label the nodes label
-      */
+     *  Sets the node label.
+     *
+     *  @param string $label the nodes label
+     */
     public function setLabel($label)
     {
-        if (!(is_scalar($label) || is_null($label))) {
+        if (!(is_scalar($label) || null === $label)) {
             return false;
         }
 
         $this->label = $label;
     }
 
-
     /**
-      *  Attach a node
-      *
-      *  @access public
-      *  @param Node $node the node to attach
-      *  @return Node
-      */
+     *  Attach a node.
+     *
+     *  @param Node $node the node to attach
+     *
+     *  @return Node
+     */
     public function &attach(Node $node)
     {
         $this->links->attach($node);
@@ -86,12 +86,12 @@ class Node implements ArrayAccess, Countable, Iterator
     }
 
     /**
-      *  Detach a node
-      *
-      *  @access public
-      *  @return Node
-      *  @param Node $node the node to remove
-      */
+     *  Detach a node.
+     *
+     *  @param Node $node the node to remove
+     *
+     *  @return Node
+     */
     public function &detach(Node $node)
     {
         foreach ($this->links as $linked_node) {
@@ -104,12 +104,12 @@ class Node implements ArrayAccess, Countable, Iterator
     }
 
     /**
-      *  Search for node in its relations
-      *
-      *  @access public
-      *  @return boolean true if found
-      *  @param Node $node the node to search for
-      */
+     *  Search for node in its relations.
+     *
+     *  @param Node $node the node to search for
+     *
+     *  @return bool true if found
+     */
     public function contains(Node $node)
     {
         foreach ($this->links as $linked_node) {
@@ -120,11 +120,10 @@ class Node implements ArrayAccess, Countable, Iterator
 
         return false;
     }
-  
-   /**
-     *  Apply a closure to all relations
+
+    /**
+     *  Apply a closure to all relations.
      *
-     *  @access public
      *  @param Closer the function to apply
      */
     public function map(Closure $function)
@@ -133,41 +132,45 @@ class Node implements ArrayAccess, Countable, Iterator
             $function($node);
         }
     }
-    
+
     //------------------------------------------------------------------
-    # Countable
-    
+    // Countable
+
     public function count()
     {
         return count($this->links);
     }
-    
+
     //------------------------------------------------------------------
-    # Iterator
+    // Iterator
 
     public function current()
     {
         return $this->links->current();
     }
+
     public function key()
     {
         return $this->links->key();
     }
+
     public function next()
     {
         return $this->links->next();
     }
+
     public function rewind()
     {
         return $this->links->rewind();
     }
+
     public function valid()
     {
         return $this->links->valid();
     }
-    
+
     //------------------------------------------------------------------
-    # ArrayAccess Implementation
+    // ArrayAccess Implementation
 
     public function offsetGet($key)
     {

@@ -1,7 +1,8 @@
 <?php
-namespace ReverseRegex\Random;
 
-use ReverseRegex\Exception as ReverseRegexException;
+declare(strict_types=1);
+
+namespace ReverseRegex\Random;
 
 /*
  * class SrandRandom
@@ -9,31 +10,28 @@ use ReverseRegex\Exception as ReverseRegexException;
  * Wrapper to mt_random with seed option
  *
  * Won't work when suhosin.srand.ignore = Off or suhosin.mt_srand.ignore = Off
- * is set. 
+ * is set.
  *
  * @author Lewis Dyer <getintouch@icomefromthenet.com>
- * 
+ *
  */
 class SrandRandom implements GeneratorInterface
 {
-    
     /**
-      *  @var integer the seed to use on each pass 
-      */
+     *  @var int the seed to use on each pass
+     */
     protected $seed;
-    
-    
-     /**
-      *  @var integer the max 
-      */
-    protected $max;
-    
+
     /**
-      *  @var integer the min 
-      */
+     *  @var int the max
+     */
+    protected $max;
+
+    /**
+     *  @var int the min
+     */
     protected $min;
-    
-    
+
     /*
      * __construct()
      *
@@ -45,77 +43,67 @@ class SrandRandom implements GeneratorInterface
     {
         $this->seed($seed);
     }
-    
+
     /**
-      *  Return the maxium random number
-      *
-      *  @access public
-      *  @return double
-      */
+     *  Return the maxium random number.
+     *
+     *  @return float
+     */
     public function max($value = null)
     {
-        if($value === null && $this->max === null) {
+        if (null === $value && null === $this->max) {
             $max = getrandmax();
-        }
-        elseif($value === null) {
+        } elseif (null === $value) {
             $max = $this->max;
-        }
-        else {
+        } else {
             $max = $this->max = $value;
         }
-        
+
         return $max;
     }
-    
-    
+
     public function min($value = null)
     {
-        if($value === null && $this->max === null) {
+        if (null === $value && null === $this->max) {
             $min = 0;
-        }
-        elseif($value === null) {
+        } elseif (null === $value) {
             $min = $this->min;
-        }
-        else {
+        } else {
             $min = $this->min = $value;
         }
-        
+
         return $min;
     }
-    
+
     /**
-      *  Generate a value between $min - $max
-      *
-      *  @param integer $max
-      *  @param integer $max 
-      */
-    public function generate($min = 0,$max = null)
+     *  Generate a value between $min - $max.
+     *
+     *  @param int $max
+     *  @param int $max
+     */
+    public function generate($min = 0, $max = null)
     {
-        if($max === null) {
+        if (null === $max) {
             $max = $this->max;
         }
-        
-        if($min === null) {
+
+        if (null === $min) {
             $min = $this->min;
         }
-        
-        
-        return rand($min,$max);
+
+        return rand($min, $max);
     }
-    
+
     /**
-      *  Set the seed to use
-      * 
-      *  @param $seed integer the seed to use
-      *  @access public
-      */
+     *  Set the seed to use.
+     *
+     *  @param $seed integer the seed to use
+     */
     public function seed($seed = null)
     {
         $this->seed = $seed;
         srand($this->seed);
-        
+
         return $this;
     }
-    
 }
-/* End of File */
