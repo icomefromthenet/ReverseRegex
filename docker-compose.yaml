@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  php:
+    image: reverse-regex:php-7.2
+    build:
+      dockerfile: php.Dockerfile
+      context: .docker
+    tty: true
+    volumes:
+      - .:/usr/app
+    user: "1000:1000"
+    working_dir: /usr/app
