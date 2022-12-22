@@ -1,11 +1,25 @@
 version: "3.8"
 
 services:
-  php:
+  php74:
     image: reverse-regex:php-7.2
     build:
       dockerfile: php.Dockerfile
       context: .docker
+      args:
+        - BASE=php:7.4-cli-alpine3.16
+    tty: true
+    volumes:
+      - .:/usr/app
+    user: "1000:1000"
+    working_dir: /usr/app
+  php80:
+    image: reverse-regex:php-8.0
+    build:
+      dockerfile: php.Dockerfile
+      context: .docker
+      args:
+        - BASE=php:8.0-cli-alpine3.16
     tty: true
     volumes:
       - .:/usr/app
