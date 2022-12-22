@@ -3,6 +3,8 @@ ReverseRegex
 
 [![PHP unit](https://github.com/ilario-pierbattista/ReverseRegex/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/ilario-pierbattista/ReverseRegex/actions/workflows/ci.yaml)
 
+> This is a fork of https://github.com/icomefromthenet/ReverseRegex (that provides `icomefromthenet/reverse-regex`).
+
 Use Regular Expressions to generate text strings can be used in the following situations:
 
 1. Wrting test data for web forms.
@@ -50,22 +52,17 @@ vaygybwkfm
 ```
 #### Other examples
 
-1. [Australian phone numbers](https://github.com/icomefromthenet/ReverseRegex/blob/master/examples/ausphone.php)
-2. [Australian postcodes](https://github.com/icomefromthenet/ReverseRegex/blob/master/examples/auspostcode.php)
-3. [Mobile numbers](https://github.com/icomefromthenet/ReverseRegex/blob/master/examples/mobilenumbers.php)
+1. [Australian phone numbers](https://github.com/ilario-pierbattista/ReverseRegex/blob/master/examples/ausphone.php)
+2. [Australian postcodes](https://github.com/ilario-pierbattista/ReverseRegex/blob/master/examples/auspostcode.php)
+3. [Mobile numbers](https://github.com/ilario-pierbattista/ReverseRegex/blob/master/examples/mobilenumbers.php)
 
 
 ##Installing
 
 To install use composer
 
-```json
-{
-  "require" : {
-	"icomefromthenet/reverse-regex" : "dev-master"
-    }
-}
-```
+    composer require ilario-pierbattista/reverse-regex
+
 ## Writing a Regex
 
 1. Escape all meta-characters i.e. if you need to escape the character in a regex you will need to escape here.

@@ -1,13 +1,13 @@
 {
-  "name": "icomefromthenet/reverse-regex",
-  "description": "Convert Regular Expressions into text, for testing",
+  "name": "ilario-pierbattista/reverse-regex",
+  "description": "Convert Regular Expressions into text, for testing. Fork of icomefromthenet/reverse-regex",
   "keywords": [
     "regex",
     "testing",
     "test data",
     "generator"
   ],
-  "homepage": "http://github.com/icomefromthenet/ReverseRegex",
+  "homepage": "https://github.com/ilario-pierbattista/ReverseRegex",
   "type": "library",
   "license": "MIT",
   "authors": [
