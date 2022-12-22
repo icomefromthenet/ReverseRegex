@@ -1,7 +1,7 @@
 ReverseRegex
 ============
 
-[![Build Status](https://travis-ci.org/icomefromthenet/ReverseRegex.png)](https://travis-ci.org/icomefromthenet/ReverseRegex)
+[![PHP unit](https://github.com/ilario-pierbattista/ReverseRegex/actions/workflows/ci.yaml/badge.svg?branch=master)](https://github.com/ilario-pierbattista/ReverseRegex/actions/workflows/ci.yaml)
 
 Use Regular Expressions to generate text strings can be used in the following situations:
 
