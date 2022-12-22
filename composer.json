@@ -31,5 +31,8 @@
       "ReverseRegex": "src/",
       "PHPStats": "src/"
     }
+  },
+  "conflict": {
+    "icomefromthenet/reverse-regex": "*"
   }
 }
