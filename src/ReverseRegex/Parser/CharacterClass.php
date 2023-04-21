@@ -2,10 +2,8 @@
 namespace ReverseRegex\Parser;
 
 use ReverseRegex\Generator\Scope;
-use ReverseRegex\Generator\LiteralScope;
 use ReverseRegex\Lexer;
 use ReverseRegex\Exception as ParserException;
-use Patchwork\Utf8;
 
 /**
   *  Parse a character class [0-9][a-z]
@@ -108,7 +106,7 @@ class CharacterClass implements StrategyInterface
                     
                 break;    
                 case($normal_lexer->isNextToken(Lexer::T_LITERAL_NUMERIC) || $normal_lexer->isNextToken(Lexer::T_LITERAL_CHAR)) :
-                    $index = (integer)Utf8::ord($normal_lexer->lookahead['value']);
+                    $index = (integer)mb_ord($normal_lexer->lookahead['value']);
                     $head->setLiteral($index,$normal_lexer->lookahead['value']);
                 break;
                 default:
@@ -131,15 +129,15 @@ class CharacterClass implements StrategyInterface
     public function fillRange(Scope $head,$start,$end)
     {
         
-        $start_index  = Utf8::ord($start);
-        $ending_index = Utf8::ord($end);
+        $start_index  = mb_ord($start);
+        $ending_index = mb_ord($end);
         
         if($ending_index < $start_index ) {
             throw new ParserException(sprintf('Character class range %s - %s is out of order',$start,$end));
         }
         
         for($i = $start_index; $i <= $ending_index; $i++) {
-            $head->setLiteral($i,Utf8::chr($i));
+            $head->setLiteral($i, mb_chr($i));
         }    
     }
   
