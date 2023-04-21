@@ -4,3 +4,4 @@ composer.lock
 *.komodoproject
 manifest
 .phpunit.result.cache
+.idea
