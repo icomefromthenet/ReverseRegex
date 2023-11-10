@@ -2,6 +2,7 @@
 namespace ReverseRegex\Test;
 
 use ReverseRegex\Exception as RegexException;
+use Doctrine\Common\Lexer\AbstractLexer;
 use ReverseRegex\Lexer;
 
 class LexerTest extends Basic
@@ -9,7 +10,7 @@ class LexerTest extends Basic
     public function testInheritsDoctrineLexer()
     {
         $lexer = new Lexer('[a-z]');
-        $this->assertInstanceOf('\Doctrine\Common\Lexer',$lexer);
+        $this->assertInstanceOf(AbstractLexer::class, $lexer);
         
     }
     
@@ -691,54 +692,47 @@ class LexerTest extends Basic
         $this->assertEquals(Lexer::T_GROUP_CLOSE,$lexer->lookahead['type']);
         
     }
-    
-    
+
     public function testGroupNestingErrorStillOpen()
     {
-        $this->expectException(RegexException::class);        
+        $this->expectException(RegexException::class);
         $this->expectExceptionMessage('Opening group char "(" has no matching closing character');
 
         $lexer = new Lexer('(()');
-        
     }
-    
-   
+
     public function testGroupNestingErrorClosedNotOpened()
     {
-        $this->expectException(RegexException::class);        
+        $this->expectException(RegexException::class);
         $this->expectExceptionMessage('Closing group char "(" has no matching opening character');
 
-        
+
         $lexer = new Lexer('())');
-        
     }
-    
-     
+
     public function testCharSetNestingError()
     {
-        $this->expectException(RegexException::class);        
+        $this->expectException(RegexException::class);
         $this->expectExceptionMessage("Can't have a second character class while first remains open");
 
         $lexer = new Lexer('[[]]');
     }
-    
-   
+
     public function testCharSetOpenError()
     {
-        $this->expectException(RegexException::class);        
+        $this->expectException(RegexException::class);
         $this->expectExceptionMessage("Can't close a character class while none is open");
 
-        
+
         $lexer = new Lexer(']');
     }
-    
-    
+
     public function testCharSetOpenNotClosed()
     {
-        $this->expectException(RegexException::class);        
+        $this->expectException(RegexException::class);
         $this->expectExceptionMessage("Character Class that been closed");
 
-        
+
         $lexer = new Lexer('[');
     }
     

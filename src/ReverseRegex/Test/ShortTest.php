@@ -25,7 +25,7 @@ class ShortTest extends Basic
         $result = $head->getLiterals();
         
         foreach($result as $value) {
-            $this->assertRegExp('/\d/',$value);
+            $this->assertMatchesRegularExpression('/\d/',$value);
         }
         
     }
@@ -45,7 +45,7 @@ class ShortTest extends Basic
         $result = $head->getLiterals();
         
         foreach($result as $value) {
-            $this->assertRegExp('/\D/',$value);
+            $this->assertMatchesRegularExpression('/\D/',$value);
         }
         
     }
@@ -103,7 +103,7 @@ class ShortTest extends Basic
         $result = $head->getLiterals();
         
         foreach($result as $value) {
-            $this->assertRegExp('/\w/',$value);
+            $this->assertMatchesRegularExpression('/\w/',$value);
         }
         
     }
@@ -124,7 +124,7 @@ class ShortTest extends Basic
         $result = $head->getLiterals();
         
         foreach($result as $value) {
-            $this->assertRegExp('/\W/',$value);
+            $this->assertMatchesRegularExpression('/\W/',$value);
         }
         
         
