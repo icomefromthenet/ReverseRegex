@@ -2,6 +2,7 @@
 namespace ReverseRegex\Generator;
 
 use \ArrayObject;
+use \Closure;
 use \SplObjectStorage;
 use \ArrayAccess;
 use \Countable;
@@ -125,7 +126,7 @@ class Node implements ArrayAccess, Countable, Iterator
      *  Apply a closure to all relations
      *
      *  @access public
-     *  @param Closer the function to apply
+     *  @param Closure $function the function to apply
      */
     public function map(Closure $function)
     {
@@ -133,60 +134,63 @@ class Node implements ArrayAccess, Countable, Iterator
             $function($node);
         }
     }
-    
+
     //------------------------------------------------------------------
     # Countable
-    
-    public function count()
+
+    public function count(): int
     {
         return count($this->links);
     }
-    
+
     //------------------------------------------------------------------
     # Iterator
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->links->current();
     }
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->links->key();
     }
-    public function next()
+    public function next(): void
     {
-        return $this->links->next();
+        $this->links->next();
     }
-    public function rewind()
+    public function rewind(): void
     {
-        return $this->links->rewind();
+        $this->links->rewind();
     }
-    public function valid()
+    public function valid(): bool
     {
         return $this->links->valid();
     }
-    
+
     //------------------------------------------------------------------
     # ArrayAccess Implementation
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return $this->attrs->offsetGet($key);
     }
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         $this->attrs->offsetSet($key, $value);
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->attrs->offsetExists($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
-        return $this->attrs->offsetUnset($key);
+        $this->attrs->offsetUnset($key);
     }
 }
 
