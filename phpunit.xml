@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" stopOnFailure="false" bootstrap="vendor/autoload.php">
-     <testsuites>
-         <testsuite name="UnitTests For ReverseRegex">
-            <directory>./src/ReverseRegex/Test/</directory>
-        </testsuite>
-  </testsuites>  
-    
-</phpunit>

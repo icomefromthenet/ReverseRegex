@@ -1,5 +1,20 @@
-vendor
-.vagrant
-composer.lock
+# Dependencies
+/vendor/
+/composer.lock
+
+# Tooling Cache Directories
+/.phpunit.cache/
+/.php-cs-fixer.cache
+/.phpstan-cache/
+
+# IDE and environment files
+.vagrant/
+.vscode/
+.idea/
 *.komodoproject
-manifest
+
+# Build artifacts
+/manifest
+
+# Log files
+*.log

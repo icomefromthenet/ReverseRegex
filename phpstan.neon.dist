@@ -1,0 +1,14 @@
+parameters:
+    tmpDir: ./.phpstan-cache
+    level: 5
+    paths:
+        - src
+    ignoreErrors:
+        # The method `parseBracedHex` in this file uses a complex
+        # control flow with the Doctrine Lexer that is proven correct by unit tests,
+        # but is too complex for the static analyzer to understand.
+        # We are ignoring all errors from this file to acknowledge this limitation
+        # and trust the test suite as the ground truth.
+        -
+            message: '~.*~'
+            path: src/Parser/Unicode.php

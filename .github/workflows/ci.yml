@@ -1,0 +1,113 @@
+# .github/workflows/ci.yml
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push events for the main and modernize branches
+  push:
+    branches: [ "main", "modernize" ]
+  # Triggers the workflow on pull request events
+  pull_request:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This job runs all the unit tests
+  tests:
+    name: PHP ${{ matrix.php-version }} - Dependencies ${{ matrix.dependency-version }}
+    runs-on: ubuntu-latest
+
+    # A matrix strategy lets you use variables to create a build for each combination
+    strategy:
+      # Ensures that all jobs in the matrix run to completion, even if one fails
+      fail-fast: false
+      matrix:
+        php-version: ['8.2', '8.3']
+        dependency-version: ['lowest', 'highest']
+
+    steps:
+      # 1. Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup the specified PHP version
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, intl
+          coverage: none # Coverage was disabled based on your choice
+
+      # 3. Cache Composer's global package directory
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      # 4. Install dependencies (either lowest or highest)
+      - name: Install lowest dependencies
+        if: matrix.dependency-version == 'lowest'
+        run: composer update --prefer-lowest --no-interaction --no-progress
+
+      - name: Install highest dependencies
+        if: matrix.dependency-version == 'highest'
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      # 5. Run the PHPUnit test suite
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit --log-junit phpunit-results.xml
+
+      # 6. Publish test results as annotations on the Pull Request
+      # This step runs even if the previous step fails, to ensure results are always published
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            phpunit-results.xml
+
+  # This job runs the static analysis checks
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup PHP (using a fixed, recent version)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      # 3. Cache Composer's global package directory
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      # 4. Install dependencies
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      # 5. Cache the PHPStan result cache to speed up future runs
+      - name: Cache PHPStan analysis
+        uses: actions/cache@v4
+        with:
+          path: ./.phpstan-cache
+          key: ${{ runner.os }}-phpstan-${{ hashFiles('**/composer.lock', '**/phpstan.neon.dist') }}
+          restore-keys: |
+            ${{ runner.os }}-phpstan-
+
+      # 6. Run PHPStan
+      # The output format 'github' automatically creates annotations on pull requests.
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --configuration=phpstan.neon.dist --error-format=github --memory-limit=1G
