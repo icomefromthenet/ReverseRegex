@@ -1,138 +1,156 @@
 <?php
+
+declare(strict_types=1);
+
 namespace ReverseRegex\Random;
 
-use ReverseRegex\Exception as ReverseRegexException;
-
 /**
-  *   Mersenne Twiseter Implementation
-  *
-  *   @author Lewis Dyer <getintouch@icomefromthenet.com>
-  *   @link http://boxrefuge.com/?tag=random-number
-  */
+ *   Mersenne Twiseter Implementation.
+ *
+ *   @author Lewis Dyer <getintouch@icomefromthenet.com>
+ *
+ *   @see http://boxrefuge.com/?tag=random-number
+ */
 class MersenneRandom implements GeneratorInterface
 {
     /**
-      *  @var integer a seed use count 
-      */
+     * @var int a seed use count
+     */
     protected $index;
-    
+
     /**
-      *  @var integer the seed value to use 
-      */
+     * @var int the seed value to use
+     */
     protected $seed;
-    
+
     /**
-      *  @var integer previous seed value used
-      */
+     * @var int|null previous seed value used
+     */
     protected $ps;
-    
+
     /**
-      *  @var integer the max 
-      */
+     * @var int|null the max
+     */
     protected $max;
-    
+
     /**
-      *  @var integer the min 
-      */
+     * @var int|null the min
+     */
     protected $min;
-    
+
+    /**
+     * @param int|null $seed
+     */
     public function __construct($seed = null)
     {
-        
         $this->seed($seed);
         $this->index = -1;
         $this->ps = null;
         $this->max = null;
         $this->min = null;
     }
-    
-    
+
+    /**
+     * @param int|null $value
+     *
+     * @return int|null
+     */
     public function max($value = null)
     {
-        if($value === null && $this->max === null) {
-            $max = 2147483647;
-        }
-        elseif($value === null) {
+        if ($value === null && $this->max === null) {
+            $max = 2_147_483_647;
+        } elseif ($value === null) {
             $max = $this->max;
-        }
-        else {
+        } else {
             $max = $this->max = $value;
         }
-        
+
         return $max;
     }
-    
-    
+
+    /**
+     * @param int|null $value
+     *
+     * @return int|null
+     */
     public function min($value = null)
     {
-        if($value === null && $this->max === null) {
+        if ($value === null && $this->max === null) {
             $min = 0;
-        }
-        elseif($value === null) {
+        } elseif ($value === null) {
             $min = $this->min;
-        }
-        else {
+        } else {
             $min = $this->min = $value;
         }
-        
+
         return $min;
     }
-    
-    public function generate($min = 0,$max = null)
+
+    /**
+     * @param int|null $min
+     * @param int|null $max
+     *
+     * @return int|float
+     */
+    public function generate($min = 0, $max = null)
     {
-        if($max === null) {
+        if ($max === null) {
             $max = $this->max;
         }
-        
-        if($min === null) {
+
+        if ($min === null) {
             $min = $this->min;
         }
-        
-        return abs($this->mt(++$this->index,$min,$max));
+
+        return abs($this->mt(++$this->index, $min, $max));
     }
-    
-    
-    public function seed($seed = null)
+
+    /**
+     * @param int|null $seed
+     */
+    public function seed($seed = null): void
     {
-        if($seed === null){
-            $seed = mt_rand(0,PHP_INT_MAX);    
+        if ($seed === null) {
+            $seed = mt_rand(0, \PHP_INT_MAX);
         }
-        
+
         $this->seed = $seed;
     }
-    
+
     /**
-    * Mersenne Twister Random Number Generator
-    * Returns a random number. Depending on the application, you likely don't have to reseed every time as you can simply select a different index
-    * from the last seed and get a different number.
-    *
-    * Note: This has been tweaked for performance. It still generates the same numbers as the original algorithm but it's slightly more complicated
-    *       because it maintains both speed and elegance. Though not a crucial difference under normal use, on 1 million iterations,
-    *       re-seeding each time, it will save 5 minutes of time from the orginal algorithm - at least on my system.
-    *
-    * @param $index An index indicating the index of the internal array to select the number to generate the random number from
-    * @param $min  The minimum number to return
-    * @param $max The maximum number to return
-    * @return float the random number
-    * @link http://boxrefuge.com/?tag=random-number
-    * @author Justin unknown
-    * 
-    **/
-    public function mt($index = null, $min = 0, $max = 1000)
+     * Mersenne Twister Random Number Generator
+     * Returns a random number. Depending on the application, you likely don't have to reseed every time as you can simply select a different index
+     * from the last seed and get a different number.
+     *
+     * Note: This has been tweaked for performance. It still generates the same numbers as the original algorithm but it's slightly more complicated
+     *       because it maintains both speed and elegance. Though not a crucial difference under normal use, on 1 million iterations,
+     *       re-seeding each time, it will save 5 minutes of time from the orginal algorithm - at least on my system.
+     *
+     * @param int|null $index An index indicating the index of the internal array to select the number to generate the random number from
+     * @param int|null $min The minimum number to return
+     * @param int|null $max The maximum number to return
+     *
+     * @return float the random number
+     *
+     * @see http://boxrefuge.com/?tag=random-number
+     *
+     * @author Justin unknown
+     */
+    public function mt($index = null, $min = 0, $max = 1_000)
     {
-        static $op = array(0x0, 0x9908b0df); // Used for efficiency below to eliminate if statement
-        static $mt = array(); // 624 element array used to get random numbers
-     
+        static $op = [0x0, 0x99_08_B0_DF]; // Used for efficiency below to eliminate if statement
+        static $mt = []; // 624 element array used to get random numbers
+
         // Regenerate when reseeding or seeding initially
-        if($this->seed !== $this->ps)
-        {
-            $s = $this->seed & 0xffffffff;
-            $mt = array(&$s, 624 => &$s);
+        if ($this->seed !== $this->ps) {
+            $s = $this->seed & 0xFF_FF_FF_FF;
+            $mt = [&$s, 624 => &$s];
             $this->ps = $this->seed;
-     
-            for($i = 1; $i < 624; ++$i)
-                $mt[$i] = (0x6c078965 * ($mt[$i - 1] ^ ($mt[$i - 1] >> 30)) + $i) & 0xffffffff;
-     
+
+            for ($i = 1; $i < 624; ++$i) {
+                $mt[$i] = (0x6C_07_89_65 * ($mt[$i - 1] ^ ($mt[$i - 1] >> 30)) + $i) & 0xFF_FF_FF_FF;
+            }
+
             // This has been tweaked for maximum speed and elegance
             // Explanation of possibly confusing variables:
             //   $p = previous index
@@ -140,27 +158,22 @@ class MersenneRandom implements GeneratorInterface
             //   $n = number to iterate to - we loop up to 227 adding 397 after which we finish looping up to 624 subtracting 227 to continue getting out 397 indices ahead reference
             //   $m = 397 or -227 to add to $i to keep our 397 index difference
             //   $i = the previous element in $sp, our starting index in this iteration
-            for($j = 1, $sp = array(0, 227, 397); $j < count($sp); ++$j)
-            {
-                for($p = $j - 1, $i = $sp[$p], $m = ((624 - $sp[$j]) * ($p ? -1 : 1)), $n = ($sp[$j] + $sp[$p]); $i < $n; ++$i)
-                {
-                    $y = ($mt[$i] & 0x80000000) | ($mt[$i + 1] & 0x7fffffff);
+            for ($j = 1, $sp = [0, 227, 397]; $j < \count($sp); ++$j) {
+                for ($p = $j - 1, $i = $sp[$p], $m = ((624 - $sp[$j]) * ($p ? -1 : 1)), $n = ($sp[$j] + $sp[$p]); $i < $n; ++$i) {
+                    $y = ($mt[$i] & 0x80_00_00_00) | ($mt[$i + 1] & 0x7F_FF_FF_FF);
                     $mt[$i] = $mt[$i + $m] ^ ($y >> 1) ^ $op[$y & 0x1];
                 }
             }
         }
-     
+
         // Select a number from the array and randomize it
         $y = $mt[$this->index = $this->index % 624];
         $y ^= $y >> 11;
-        $y ^= ($y << 7) & 0x9d2c5680;
-        $y ^= ($y << 15) & 0xefc60000;
+        $y ^= ($y << 7) & 0x9D_2C_56_80;
+        $y ^= ($y << 15) & 0xEF_C6_00_00;
         $y ^= $y >> 18;
-     
+
         return $y % ($max - $min + 1) + $min;
     }
-    
-
-    
 }
-/* End of File */
+// End of File

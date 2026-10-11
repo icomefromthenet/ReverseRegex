@@ -1,0 +1,36 @@
+services:
+  php81: &common
+    build: &build
+      dockerfile: php.Dockerfile
+      context: .docker
+      args:
+        - BASE=${PHP_REGISTRY:-}php:8.1-cli-alpine
+    tty: true
+    volumes:
+      - .:/usr/app
+    user: "1000:1000"
+    working_dir: /usr/app
+  php82:
+    <<: *common
+    build:
+      <<: *build
+      args:
+        - BASE=${PHP_REGISTRY:-}php:8.2-cli-alpine
+  php83:
+    <<: *common
+    build:
+      <<: *build
+      args:
+        - BASE=${PHP_REGISTRY:-}php:8.3-cli-alpine
+  php84:
+    <<: *common
+    build:
+      <<: *build
+      args:
+        - BASE=${PHP_REGISTRY:-}php:8.4-cli-alpine
+  php85:
+    <<: *common
+    build:
+      <<: *build
+      args:
+        - BASE=${PHP_REGISTRY:-}php:8.5-cli-alpine

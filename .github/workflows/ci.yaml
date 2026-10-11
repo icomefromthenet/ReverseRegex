@@ -1,0 +1,111 @@
+name: PHP unit
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+
+    name: Tests (PHP ${{ matrix.php }}, ${{ matrix.dependencies }} deps)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ["8.1", "8.5"]
+        dependencies: ["lowest", "highest"]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          ini-values: error_reporting=-1, display_errors=On
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Install lowest dependencies
+        if: matrix.dependencies == 'lowest'
+        run: composer update --prefer-lowest --prefer-stable --no-interaction
+
+      - name: Install highest dependencies
+        if: matrix.dependencies == 'highest'
+        run: composer update --prefer-stable --no-interaction
+
+      - name: Run test suite
+        run: vendor/bin/phpunit
+
+      - name: Run examples
+        working-directory: examples
+        run: |
+          for f in *.php; do
+            echo "::group::$f"
+            php "$f"
+            echo "::endgroup::"
+          done
+
+  coverage:
+
+    name: Coverage (PHP 8.5)
+    runs-on: ubuntu-latest
+    # The CODECOV_TOKEN secret is stored in this environment.
+    environment: ci
+    env:
+      # Minimum line coverage (%) below which the job fails.
+      MIN_LINE_COVERAGE: 90
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          coverage: pcov
+          ini-values: error_reporting=-1, display_errors=On
+
+      - name: Install dependencies
+        run: composer update --prefer-stable --no-interaction
+
+      - name: Run test suite with coverage
+        run: set -o pipefail; vendor/bin/phpunit --colors=never --coverage-text --coverage-clover=coverage.xml | tee coverage.txt
+
+      - name: Publish coverage summary
+        if: always()
+        run: |
+          {
+            echo '### Code coverage'
+            echo '```'
+            sed -n '/Code Coverage Report/,$p' coverage.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Check minimum line coverage
+        run: |
+          lines=$(sed -n 's/^ *Lines: *\([0-9.]*\)%.*/\1/p' coverage.txt | head -n 1)
+          echo "Line coverage: ${lines}% (minimum ${MIN_LINE_COVERAGE}%)"
+          awk -v l="$lines" -v m="$MIN_LINE_COVERAGE" 'BEGIN { exit !(l != "" && l + 0 >= m + 0) }'
+
+      - name: Upload coverage to Codecov
+        # Needs the CODECOV_TOKEN secret; it never fails the build (e.g. on forks or outages).
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: coverage-clover
+          path: coverage.xml
+          if-no-files-found: ignore

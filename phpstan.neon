@@ -1,0 +1,11 @@
+parameters:
+    level: 6
+    phpVersion: 80100 # PHP 8.1.0 - minimum supported version
+    paths:
+        - src
+    excludePaths:
+        - src/PHPStats/Generator
+    reportUnmatchedIgnoredErrors: false
+
+includes:
+    - phpstan-baseline.neon

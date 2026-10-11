@@ -3,3 +3,7 @@ vendor
 composer.lock
 *.komodoproject
 manifest
+.phpunit.result.cache
+.idea
+.php-cs-fixer.cache
+.claude

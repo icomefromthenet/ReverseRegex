@@ -1,0 +1,45 @@
+---
+name: Static Analysis
+
+'on':
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+permissions:
+  contents: read
+
+jobs:
+  phpstan:
+
+    name: PHPStan (PHP 8.1)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v5
+        with:
+          path: vendor
+          key: >-
+            ${{ runner.os }}-php-8.1-${{
+            hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-8.1-
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Run PHPStan
+        run: composer phpstan

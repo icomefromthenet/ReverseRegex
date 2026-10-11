@@ -1,41 +1,48 @@
 <?php
+
+declare(strict_types=1);
+
 namespace ReverseRegex\Generator;
 
-use \ArrayObject;
-use \SplObjectStorage;
-use \ArrayAccess;
-use \Countable;
-use \Iterator;
+use ArrayAccess;
+use ArrayObject;
+use Closure;
+use Countable;
+use Iterator;
+use SplObjectStorage;
 
 /**
-  *  Base to all Generator Scopes 
-  *
-  *  @author Lewis Dyer <getintouch@icomefromthenet.com>
-  *  @since 0.0.1
-  */
+ *  Base to all Generator Scopes.
+ *
+ *  @author Lewis Dyer <getintouch@icomefromthenet.com>
+ *
+ *  @since 0.0.1
+ *
+ * @implements ArrayAccess<array-key, mixed>
+ * @implements Iterator<int, Node>
+ */
 class Node implements ArrayAccess, Countable, Iterator
 {
     /**
-      *  @var string name of the node 
-      */
+     * @var scalar|null name of the node
+     */
     protected $label;
-    
+
     /**
-      *  @var ArrayObject container for node metadata 
-      */
+     * @var ArrayObject<array-key, mixed> container for node metadata
+     */
     protected $attrs;
-    
+
     /**
-      *  @var SplObjectStorage container for node relationships 
-      */
+     * @var SplObjectStorage<Node, mixed> container for node relationships
+     */
     protected $links;
 
     /**
-      *  Class Constructor
-      *
-      *  @access public
-      *  @param string $label
-      */
+     *  Class Constructor.
+     *
+     * @param mixed $label
+     */
     public function __construct($label = 'node')
     {
         $this->attrs = new ArrayObject();
@@ -45,58 +52,59 @@ class Node implements ArrayAccess, Countable, Iterator
     }
 
     /**
-      *  Fetch the nodes label
-      *
-      *  @access public
-      *  @return string the nodes label
-      */
+     *  Fetch the nodes label.
+     *
+     * @return scalar|null the nodes label
+     */
     public function getLabel()
     {
         return $this->label;
     }
 
     /**
-      *  Sets the node label
-      *
-      *  @access public
-      *  @param string $label the nodes label
-      */
+     *  Sets the node label.
+     *
+     * @param mixed $label the nodes label
+     *
+     * @return bool|null false when the label is not scalar
+     */
     public function setLabel($label)
     {
-        if (!(is_scalar($label) || is_null($label))) {
+        if (! (\is_scalar($label) || null === $label)) {
             return false;
         }
 
         $this->label = $label;
+
+        return null;
     }
 
-
     /**
-      *  Attach a node
-      *
-      *  @access public
-      *  @param Node $node the node to attach
-      *  @return Node
-      */
-    public function &attach(Node $node)
+     *  Attach a node.
+     *
+     * @param Node $node the node to attach
+     *
+     * @return Node
+     */
+    public function &attach(self $node)
     {
-        $this->links->attach($node);
+        $this->links->offsetSet($node);
 
         return $this;
     }
 
     /**
-      *  Detach a node
-      *
-      *  @access public
-      *  @return Node
-      *  @param Node $node the node to remove
-      */
-    public function &detach(Node $node)
+     *  Detach a node.
+     *
+     * @param Node $node the node to remove
+     *
+     * @return Node
+     */
+    public function &detach(self $node)
     {
         foreach ($this->links as $linked_node) {
             if ($linked_node == $node) {
-                $this->links->detach($node);
+                $this->links->offsetUnset($node);
             }
         }
 
@@ -104,13 +112,13 @@ class Node implements ArrayAccess, Countable, Iterator
     }
 
     /**
-      *  Search for node in its relations
-      *
-      *  @access public
-      *  @return boolean true if found
-      *  @param Node $node the node to search for
-      */
-    public function contains(Node $node)
+     *  Search for node in its relations.
+     *
+     * @param Node $node the node to search for
+     *
+     * @return bool true if found
+     */
+    public function contains(self $node): bool
     {
         foreach ($this->links as $linked_node) {
             if ($linked_node == $node) {
@@ -120,74 +128,80 @@ class Node implements ArrayAccess, Countable, Iterator
 
         return false;
     }
-  
-   /**
-     *  Apply a closure to all relations
+
+    /**
+     *  Apply a closure to all relations.
      *
-     *  @access public
-     *  @param Closer the function to apply
+     * @param Closure $function the function to apply
      */
-    public function map(Closure $function)
+    public function map(Closure $function): void
     {
         foreach ($this->links as $node) {
             $function($node);
         }
     }
-    
-    //------------------------------------------------------------------
-    # Countable
-    
-    public function count()
-    {
-        return count($this->links);
-    }
-    
-    //------------------------------------------------------------------
-    # Iterator
 
+    // ------------------------------------------------------------------
+    // Countable
+
+    public function count(): int
+    {
+        return \count($this->links);
+    }
+
+    // ------------------------------------------------------------------
+    // Iterator
+
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->links->current();
     }
+
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->links->key();
     }
-    public function next()
+
+    public function next(): void
     {
-        return $this->links->next();
+        $this->links->next();
     }
-    public function rewind()
+
+    public function rewind(): void
     {
-        return $this->links->rewind();
+        $this->links->rewind();
     }
-    public function valid()
+
+    public function valid(): bool
     {
         return $this->links->valid();
     }
-    
-    //------------------------------------------------------------------
-    # ArrayAccess Implementation
 
+    // ------------------------------------------------------------------
+    // ArrayAccess Implementation
+
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return $this->attrs->offsetGet($key);
     }
 
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         $this->attrs->offsetSet($key, $value);
     }
 
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->attrs->offsetExists($key);
     }
 
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
-        return $this->attrs->offsetUnset($key);
+        $this->attrs->offsetUnset($key);
     }
 }
 
-/* End of Class */
+// End of Class

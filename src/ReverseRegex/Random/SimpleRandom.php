@@ -1,120 +1,128 @@
 <?php
+
+declare(strict_types=1);
+
 namespace ReverseRegex\Random;
 
-use ReverseRegex\Exception as ReverseRegexException;
-
 /**
-  *  Simple Random
-  *
-  *  @link http://www.sitepoint.com/php-random-number-generator/
-  *  @author Craig Buckler 
-  */
+ *  Simple Random.
+ *
+ *  @see http://www.sitepoint.com/php-random-number-generator/
+ *
+ *  @author Craig Buckler
+ */
 class SimpleRandom implements GeneratorInterface
 {
-    
     /**
-      *  @var integer the seed value to use 
-      */
+     * @var int the seed value to use
+     */
     protected $seed = 0;
-    
+
     /**
-      *  @var integer the max 
-      */
+     * @var int the max
+     */
     protected $max;
-    
+
     /**
-      *  @var integer the min 
-      */
+     * @var int the min
+     */
     protected $min;
-     
+
     /**
-      *  Constructor
-      *
-      *  @return void
-      *  @access public
-      *  @param integer $seed
-      */ 
+     *  Constructor.
+     *
+     * @param int|null $seed
+     *
+     * @return void
+     */
     public function __construct($seed = null)
     {
         if ($seed === null || $seed === 0) {
             $this->seed(mt_rand());
         }
-        
+
         $this->seed($seed);
     }
-     
+
+    /**
+     * @param int|null $value
+     *
+     * @return int|null
+     */
     public function max($value = null)
     {
-        if($value === null && $this->max === null) {
-            $max = 2147483647;
-        }
-        elseif($value === null) {
+        if ($value === null && $this->max === null) {
+            $max = 2_147_483_647;
+        } elseif ($value === null) {
             $max = $this->max;
-        }
-        else {
+        } else {
             $max = $this->max = $value;
         }
-        
+
         return $max;
     }
-    
-    
+
+    /**
+     * @param int|null $value
+     *
+     * @return int|null
+     */
     public function min($value = null)
     {
-        if($value === null && $this->max === null) {
+        if ($value === null && $this->max === null) {
             $min = 0;
-        }
-        elseif($value === null) {
+        } elseif ($value === null) {
             $min = $this->min;
-        }
-        else {
+        } else {
             $min = $this->min = $value;
         }
-        
+
         return $min;
     }
-     
-     
+
     /**
-      *  Set the seed to use for generator
-      *
-      *  @param integer $seed the seed to use
-      *  @access public
-      */  
+     *  Set the seed to use for generator.
+     *
+     * @param int|null $seed the seed to use
+     *
+     * @return int
+     */
     public function seed($seed = null)
-    {  
-        if($seed === null) {
+    {
+        if ($seed === null) {
             $seed = 0;
         }
-        
-        return $this->seed = abs(intval($seed)) % 9999999 + 1;  
-    }  
-    
+
+        return $this->seed = abs((int) $seed) % 9_999_999 + 1;
+    }
+
     /**
-      *  Generate a random numer
-      *
-      *  @param integer $max
-      *  @param integer $max 2,796,203 largest possible max
-      */
+     *  Generate a random numer.
+     *
+     * @param int $min
+     * @param int|null $max 2,796,203 largest possible max
+     *
+     * @return int
+     */
     public function generate($min = 0, $max = null)
-    {  
-        if($max === null) {
-            $max = 2796203;
+    {
+        if ($max === null) {
+            $max = 2_796_203;
         }
-        
-        if($max > 2796203) {
-            throw new ReverseRegexException('Max param has exceeded the maxium 2796203');
+
+        // Cap extremely large values (e.g., PHP_INT_MAX from unbounded quantifiers like * or +)
+        // to a reasonable maximum to prevent memory exhaustion
+        if ($max > 2_796_203) {
+            $max = 2_796_203;
         }
-        
+
         if ($this->seed == 0) {
             $this->seed(mt_rand());
         }
-        
-        $this->seed = ($this->seed * 125) % 2796203;  
-        
-        
-        return $this->seed % ($max - $min + 1) + $min;  
-    }  
-    
+
+        $this->seed = ($this->seed * 125) % 2_796_203;
+
+        return $this->seed % ($max - $min + 1) + $min;
+    }
 }
-/* End of File */
+// End of File

@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    # Only dev dependencies are pinned precisely; runtime constraints are
+    # ranges and must stay as wide as they are.
+    versioning-strategy: "increase-if-necessary"

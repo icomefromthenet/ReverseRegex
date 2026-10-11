@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" stopOnFailure="false" bootstrap="vendor/autoload.php">
-     <testsuites>
-         <testsuite name="UnitTests For ReverseRegex">
-            <directory>./src/ReverseRegex/Test/</directory>
+<phpunit colors="true"
+         bootstrap="vendor/autoload.php"
+         stopOnFailure="false"
+         failOnDeprecation="true"
+         failOnNotice="true"
+         failOnWarning="true"
+         failOnRisky="true"
+         beStrictAboutOutputDuringTests="true">
+    <testsuites>
+        <testsuite name="UnitTests For ReverseRegex">
+            <directory>./tests/</directory>
         </testsuite>
-  </testsuites>  
-    
+    </testsuites>
+    <source>
+        <include>
+            <directory>./src/ReverseRegex/</directory>
+        </include>
+    </source>
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="display_errors" value="1"/>
+    </php>
 </phpunit>
